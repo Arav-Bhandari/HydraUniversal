@@ -1,0 +1,9 @@
+# System and temporary files
+.DS_Store
+.cache/
+.local/
+discord.log
+premium_security_data/
+
+# JSON configuration files
+*.json
