@@ -570,7 +570,7 @@ class Stats(commands.Cog):
 
     def _create_add_stat_command(self, category: str):
         """Create dynamic add_stat command."""
-        async def add_stat(interaction: discord.Interaction, **kwargs: Dict[str, Union[str, int]]) -> None:
+        async def add_stat(interaction: discord.Interaction, **kwargs) -> None:
             config = get_server_config(interaction.guild_id)
             game_type = config.get("game_type", "7v7")
             await self._update_stats_command_handler(
