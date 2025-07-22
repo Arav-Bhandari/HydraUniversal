@@ -393,12 +393,25 @@ class Stats(commands.Cog):
 
     async def cog_check(self, ctx):
         """Check for Statistician role."""
-        if not await has_statistician_role(ctx):
-            await ctx.send(embed=self.create_beautiful_embed(
-                ctx, "🚫 Access Denied",
-                "Only users with the **Statistician** role can use these commands.",
-                discord.Color.red()
-            ), ephemeral=True)
+        # Get the member object properly
+        if hasattr(ctx, 'user'):
+            member = ctx.guild.get_member(ctx.user.id) if ctx.guild else None
+        elif hasattr(ctx, 'author'):
+            member = ctx.author if hasattr(ctx.author, 'roles') else ctx.guild.get_member(ctx.author.id)
+        else:
+            return False
+            
+        if not member or not await has_statistician_role(member):
+            embed = self.create_enhanced_embed(
+                "🚫 Access Denied",
+                "Only users with the **Statistician** role can use these commands.\n\nContact an administrator to get the required role.",
+                discord.Color.red(),
+                ctx
+            )
+            if hasattr(ctx, 'response'):
+                await ctx.response.send_message(embed=embed, ephemeral=True)
+            else:
+                await ctx.send(embed=embed, ephemeral=True)
             return False
         return True
 
@@ -432,6 +445,33 @@ class Stats(commands.Cog):
         footer_text = " • ".join(footer_parts)
         if footer_text:
             embed.set_footer(text=footer_text, icon_url=requestor_avatar_url)
+        return embed
+
+    def create_enhanced_embed(self, title, description, color, interaction):
+        """Create an enhanced styled embed with better visual design."""
+        # Add decorative elements to description
+        if description and not description.startswith("━"):
+            description = f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n{description}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        
+        embed = discord.Embed(
+            title=f"{self.get_title_emoji(title)} {title}",
+            description=description,
+            color=color,
+            timestamp=datetime.now(timezone.utc)
+        )
+        
+        # Set thumbnail based on guild icon
+        if interaction.guild and interaction.guild.icon:
+            embed.set_thumbnail(url=interaction.guild.icon.url)
+        
+        # Enhanced footer with better formatting
+        guild_name = interaction.guild.name if interaction.guild else "Unknown Server"
+        requestor_name = interaction.user.display_name if interaction.user else "Unknown User"
+        requestor_avatar = interaction.user.avatar.url if interaction.user and interaction.user.avatar else None
+        
+        footer_text = f"🏟️ {guild_name} • 👤 Requested by {requestor_name}"
+        embed.set_footer(text=footer_text, icon_url=requestor_avatar)
+        
         return embed
 
     def get_title_emoji(self, title):
@@ -551,49 +591,81 @@ class Stats(commands.Cog):
     ])
     async def stat_config(self, interaction: discord.Interaction, game_type: str):
         """Configure game type for the guild."""
-        if not is_admin(interaction.user):  # Remove await since is_admin is synchronous in fallback
-            await interaction.response.send_message(embed=self.create_beautiful_embed(
-                interaction, "🚫 Permission Denied",
-                "Only server **Administrators** can configure game types.",
-                discord.Color.red()
-            ), ephemeral=True)
-            return
-
-        if game_type not in self.game_types:
-            await interaction.response.send_message(embed=self.create_beautiful_embed(
-                interaction, "⚠️ Invalid Game Type",
-                f"Game type {game_type} is not supported.",
-                discord.Color.orange()
-            ), ephemeral=True)
-            return
-
         try:
-            config = get_server_config(interaction.guild_id)  # Remove await
+            # Check admin permissions
+            if not interaction.user.guild_permissions.administrator:
+                embed = self.create_enhanced_embed(
+                    "🚫 Access Denied",
+                    "Only server **Administrators** can configure game types.",
+                    discord.Color.red(),
+                    interaction
+                )
+                await interaction.response.send_message(embed=embed, ephemeral=True)
+                return
+
+            if game_type not in self.game_types:
+                embed = self.create_enhanced_embed(
+                    "⚠️ Invalid Game Type",
+                    f"Game type **{game_type}** is not supported.\n\nSupported types: {', '.join(self.game_types.keys())}",
+                    discord.Color.orange(),
+                    interaction
+                )
+                await interaction.response.send_message(embed=embed, ephemeral=True)
+                return
+
+            # Get current config
+            config = get_server_config(interaction.guild_id)
             if not isinstance(config, dict):
                 config = get_default_config()
+            
+            # Update game type
             config["game_type"] = game_type
-            update_server_config(interaction.guild_id, "game_type", game_type)  # Remove await, use key-value update
-            save_guild_config(interaction.guild_id, config)  # Remove await
+            update_server_config(interaction.guild_id, "game_type", game_type)
+            save_guild_config(interaction.guild_id, config)
 
+            # Register new commands for this game type
             await self.register_commands_for_guild(interaction.guild_id)
 
-            embed = self.create_beautiful_embed(
-                interaction, "⚙️ Game Type Configured",
-                f"Game type set to **{game_type}** for **{interaction.guild.name}**. Commands have been updated.",
-                discord.Color.green()
+            # Create success embed with enhanced styling
+            embed = self.create_enhanced_embed(
+                "⚙️ Game Type Configured Successfully",
+                f"✅ Game type set to **{game_type}** for **{interaction.guild.name}**\n\n🔄 Commands have been updated and synced automatically.",
+                discord.Color.green(),
+                interaction
             )
+            
+            # Add configuration details
+            game_config = self.game_types[game_type]
+            categories_text = ", ".join([f"**{cat}**" for cat in game_config["categories"]])
+            embed.add_field(
+                name="📊 Available Categories",
+                value=categories_text,
+                inline=False
+            )
+            
+            embed.add_field(
+                name="🎯 Next Steps",
+                value="• Use `/statview` to view player statistics\n• Use `/statleaderboard` to see top performers\n• Use position-specific commands to add stats",
+                inline=False
+            )
+
             await interaction.response.send_message(embed=embed)
+            
+            # Log the action
             await log_action(
                 interaction.guild, "CONFIG", interaction.user,
                 f"Set game type to {game_type}", "stat_config"
             )
+            
         except Exception as e:
             logger.error(f"Error configuring game type for guild {interaction.guild_id}: {e}")
-            await interaction.response.send_message(embed=self.create_beautiful_embed(
-                interaction, "🚫 Error",
-                f"Failed to configure game type: {e}",
-                discord.Color.red()
-            ), ephemeral=True)
+            embed = self.create_enhanced_embed(
+                "🚫 Configuration Error",
+                f"Failed to configure game type. Please try again.\n\n**Error:** {str(e)}",
+                discord.Color.red(),
+                interaction
+            )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @app_commands.command(name="statview", description="View a player's statistics.")
     @app_commands.describe(category="The position category.", player="The name of the player.")
@@ -708,15 +780,38 @@ class Stats(commands.Cog):
                 player_display = f"👑 {player_display} 👑"
             leaderboard_lines.append(f"{rank}. {player_display} — **{formatted_stat_value}**")
 
-        embed = self.create_beautiful_embed(
-            interaction, f"{game_config['display_names'].get(category, category)} Leaderboard",
-            f"🏆 Top performers for **{game_config['display_names'].get(category, category)}** based on **{self.stat_key_display_names.get(sort_key, sort_key.replace('_', ' ').title())}**.",
-            discord.Color.gold()
+        embed = self.create_enhanced_embed(
+            f"🏆 {game_config['display_names'].get(category, category)} Leaderboard",
+            f"**Top performers for {game_config['display_names'].get(category, category)}**\n📊 **Ranked by:** {self.stat_key_display_names.get(sort_key, sort_key.replace('_', ' ').title())}",
+            discord.Color.gold(),
+            interaction
         )
-        embed.add_field(name="📈 Leaderboard Standings", value="\n".join(leaderboard_lines), inline=False)
-        embed.set_footer(
-            text=f"Top {len(top_players)} players • Metric: {self.stat_key_display_names.get(sort_key, sort_key.replace('_', ' ').title())}",
-            icon_url=interaction.user.avatar.url if interaction.user.avatar else None
+        
+        # Split leaderboard into multiple fields for better readability
+        if len(leaderboard_lines) > 5:
+            mid_point = len(leaderboard_lines) // 2
+            embed.add_field(
+                name="🥇 Top Performers", 
+                value="\n".join(leaderboard_lines[:mid_point]), 
+                inline=True
+            )
+            embed.add_field(
+                name="🏅 More Leaders", 
+                value="\n".join(leaderboard_lines[mid_point:]), 
+                inline=True
+            )
+        else:
+            embed.add_field(
+                name="📈 Leaderboard Standings", 
+                value="\n".join(leaderboard_lines), 
+                inline=False
+            )
+        
+        # Add summary field
+        embed.add_field(
+            name="📊 Summary",
+            value=f"**Total Players:** {len(top_players)}\n**Metric:** {self.stat_key_display_names.get(sort_key, sort_key.replace('_', ' ').title())}\n**Game Type:** {game_type.title()}",
+            inline=False
         )
 
         await interaction.response.send_message(embed=embed)
@@ -818,12 +913,14 @@ class Stats(commands.Cog):
         game_type = config.get("game_type", "7v7")
         game_config = self.game_types.get(game_type, self.game_types["7v7"])
 
-        if not await is_admin(interaction.user):
-            await interaction.response.send_message(embed=self.create_beautiful_embed(
-                interaction, "🚫 Permission Denied",
-                "Only **Administrators** can perform stat merges.",
-                discord.Color.red()
-            ), ephemeral=True)
+        if not interaction.user.guild_permissions.administrator:
+            embed = self.create_enhanced_embed(
+                "🚫 Permission Denied",
+                "Only **Administrators** can perform stat merges.\n\nThis action requires administrative privileges.",
+                discord.Color.red(),
+                interaction
+            )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
             return
 
         if player1.lower() == player2.lower():
@@ -944,12 +1041,14 @@ class Stats(commands.Cog):
         game_type = config.get("game_type", "7v7")
         game_config = self.game_types.get(game_type, self.game_types["7v7"])
 
-        if not await is_admin(interaction.user):
-            await interaction.response.send_message(embed=self.create_beautiful_embed(
-                interaction, "🚫 Permission Denied",
-                "Only **Administrators** can clear stats.",
-                discord.Color.red()
-            ), ephemeral=True)
+        if not interaction.user.guild_permissions.administrator:
+            embed = self.create_enhanced_embed(
+                "🚫 Permission Denied",
+                "Only **Administrators** can clear stats.\n\n⚠️ This is a destructive action that requires admin privileges.",
+                discord.Color.red(),
+                interaction
+            )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
             return
 
         guild_id_str = str(interaction.guild_id)
@@ -1025,17 +1124,29 @@ class Stats(commands.Cog):
         if total_players_found:
             file_name = f"stats_export_{interaction.guild.name.replace(' ', '_').lower()}_{datetime.now().strftime('%Y%m%d')}.csv"
             file = discord.File(fp=io.BytesIO(csv_content), filename=file_name)
-            embed = self.create_beautiful_embed(
-                interaction, "📤 Stats Exported",
-                f"Exported **{total_players_found}** player stat entries for **{interaction.guild.name}**.",
-                discord.Color.blue()
+            embed = self.create_enhanced_embed(
+                "📤 Stats Export Complete",
+                f"Successfully exported **{total_players_found}** player stat entries.\n\n📊 **Game Type:** {game_type.title()}\n📅 **Export Date:** {datetime.now().strftime('%B %d, %Y')}",
+                discord.Color.blue(),
+                interaction
+            )
+            embed.add_field(
+                name="📁 File Details",
+                value=f"**Filename:** `{file_name}`\n**Format:** CSV (Comma Separated Values)\n**Categories:** {len(game_config['categories'])} position types",
+                inline=False
             )
             await interaction.response.send_message(embed=embed, file=file)
         else:
-            embed = self.create_beautiful_embed(
-                interaction, "📄 No Stats Found",
-                f"No stats recorded for **{interaction.guild.name}**.",
-                discord.Color.orange()
+            embed = self.create_enhanced_embed(
+                "📄 No Stats Available",
+                f"No statistics have been recorded for **{interaction.guild.name}** yet.\n\n💡 **Tip:** Start recording stats using the position-specific commands!",
+                discord.Color.orange(),
+                interaction
+            )
+            embed.add_field(
+                name="🎯 Getting Started",
+                value="• Use `/statconfig` to set your game type\n• Use position commands like `/add_qb_stats`\n• View results with `/statview` and `/statleaderboard`",
+                inline=False
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
