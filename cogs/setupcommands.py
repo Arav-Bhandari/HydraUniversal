@@ -45,7 +45,7 @@ async def addteam_role_autocomplete(
     # Ensure guild is available and bot has permissions to view roles
     # A simple check might be to see if the bot can see its own roles or guild roles.
     # Guild insights permission isn't strictly necessary for role listing in many cases.
-    
+
     guild_roles = sorted(
         interaction.guild.roles, key=lambda r: r.position, reverse=True
     )
@@ -190,7 +190,7 @@ class SetupCommands(commands.Cog):
                     # Get mentions for roles that exist in the guild
                     roles_mentions_list = [interaction.guild.get_role(rid).mention for rid in role_ids_list if interaction.guild.get_role(rid)]
                     if roles_mentions_list: current_display_value = "\n".join([f"• {r}" for r in roles_mentions_list])
-            
+
             elif field_item["type"] == "channel":
                 actual_config_key = key_mapping_dict.get(field_key_page) # Map UI key to actual config key
                 channel_id_val = None
@@ -201,25 +201,30 @@ class SetupCommands(commands.Cog):
                         channel_id_val = guild_config_live.get("announcement_channels", {}).get(actual_config_key)
                     else: # Log channels
                         channel_id_val = guild_config_live.get("log_channels", {}).get(actual_config_key)
-                    
+
                     if channel_id_val:
                         channel_obj = interaction.guild.get_channel(channel_id_val)
                         if channel_obj: current_display_value = channel_obj.mention
-            
+
             elif field_item["type"] == "text": # For fields like global roster cap
                 if field_key_page == "global_roster_cap":
                     current_display_value = f"`{str(guild_config_live.get('roster_cap', DEFAULT_ROSTER_CAP))}`"
-            
-            elif field_item["type"] == "team": # For team-specific configurations like roster caps
+
+            elif field_item["type"] == "team":  # For team-specific configurations like roster caps
                 team_data_dict = guild_config_live.get("team_data", {})
                 global_cap_val = guild_config_live.get("roster_cap", DEFAULT_ROSTER_CAP)
                 display_parts = [f"**Global Default Cap:** `{global_cap_val}`\n\n**Team Specific Caps:**"]
                 sorted_teams = sorted(list(team_data_dict.keys()))
                 if sorted_teams:
                     for team_n in sorted_teams[:10]: # Show first 10 teams
-                        team_specific_cap_val = team_data_dict[team_n].get('roster_cap', f"Uses Global (`{global_cap_val}`)")
-                        team_emoji = team_data_dict[team_n].get('emoji','🔹')
-                        display_parts.append(f"• {team_emoji} **{team_n}**: `{team_specific_cap_val}`")
+                        team_info = team_data_dict[team_n]
+                        team_specific_cap_val = team_info.get('roster_cap')
+                        if team_specific_cap_val is None or team_specific_cap_val == global_cap_val:
+                            cap_display = f"Uses Global (`{global_cap_val}`)"
+                        else:
+                            cap_display = f"`{team_specific_cap_val}`"
+                        team_emoji = team_info.get('emoji','🔹')
+                        display_parts.append(f"• {team_emoji} **{team_n}**: {cap_display}")
                     if len(sorted_teams) > 10: display_parts.append(f"... and {len(sorted_teams) - 10} more teams.")
                 else:
                     display_parts.append("No teams configured for specific caps. Use `/addteam` first.")
@@ -230,11 +235,11 @@ class SetupCommands(commands.Cog):
             embed.add_field(name=field_item.get('name', 'Unnamed Field'),
                             value=f"{field_item.get('description','')}\n\n**Current:** {current_display_value}",
                             inline=field_item.get("inline", True))
-        
+
         embed.set_footer(text=f"Page {page_index + 1}/{len(setup_pages_list)} • Session active for this user only.")
         # Create the view for this page, passing necessary context
         view = SetupPageView(self, page_data_dict, session, interaction.guild, interaction.user.id)
-        
+
         # Respond to the interaction: edit original message if already responded, otherwise send a followup.
         if interaction.response.is_done():
             await interaction.edit_original_response(embed=embed, view=view)
@@ -314,7 +319,7 @@ class SetupCommands(commands.Cog):
                 # Process existing role selection
                 role_id_int = int(role_id_or_new)
                 role_obj = interaction.guild.get_role(role_id_int)
-                
+
                 if not role_obj:
                     raise ValueError(
                         "The selected role could not be found. "
@@ -440,7 +445,7 @@ class SetupCommands(commands.Cog):
         # Check if team exists in either the new or legacy structure
         team_entry_exists = team_name in team_data
         team_legacy_entry_exists = team_name in team_roles_legacy
-        
+
         if not team_entry_exists and not team_legacy_entry_exists:
             await interaction.response.send_message(
                 embed=EmbedBuilder.error(
@@ -507,17 +512,17 @@ class SetupCommands(commands.Cog):
                     temp_role_obj = interaction.guild.get_role(role_id_int)
                     if not temp_role_obj:
                         raise ValueError("Selected role not found. It might have been deleted.")
-                    
+
                     # Security checks
                     if temp_role_obj.permissions.administrator:
                         raise ValueError("Cannot assign a role with administrator permissions as a team role.")
-                    
+
                     # Hierarchy check
                     user_top_role_position = interaction.user.top_role.position if interaction.user.top_role else -1
                     if interaction.user.id != interaction.guild.owner_id and \
                        temp_role_obj.position >= user_top_role_position:
                         raise ValueError("Cannot assign a role that is higher than or equal to your own highest role (unless server owner).")
-                    
+
                     new_role_obj = temp_role_obj # Assign found role
                     target_role_id = temp_role_obj.id
 
@@ -605,7 +610,7 @@ class SetupCommands(commands.Cog):
         if current_team_info.get('role_id'):
             role = interaction.guild.get_role(current_team_info['role_id'])
             if role: final_role_mention = role.mention
-        
+
         final_emoji = current_team_info.get('emoji', '🏆')
         final_cap = current_team_info.get('roster_cap', DEFAULT_ROSTER_CAP)
 
@@ -664,7 +669,7 @@ class SetupCommands(commands.Cog):
             await interaction.response.send_message(
                 embed=EmbedBuilder.error(
                     "❓ Team Not Found",
-                    f"Team **{team_name}** was not found in the configuration."
+                    f"Team **{team_name}**** was not found in the configuration."
                 ),
                 ephemeral=True
             )
@@ -828,7 +833,7 @@ class SetupCommands(commands.Cog):
             logger.error(f"Failed to load server config for guild {interaction.guild.id} in /setup: {e}", exc_info=True)
             await interaction.response.send_message(embed=EmbedBuilder.error("❌ Config Load Error", "Failed to load server configuration. Please try again."), ephemeral=True)
             return
-        
+
         # Initialize session data for the interactive setup
         session_data = {
             "config": live_config_from_db, # Store a mutable reference to the config
@@ -845,7 +850,7 @@ class SetupCommands(commands.Cog):
                 "reminders_channel": "reminders_channel_id", # Special case for notification_settings
             }
         }
-        
+
         # Define the structure for the setup wizard pages
         setup_pages = [
             {"title": "👑 Core Roles", "description": "Essential roles for bot operation and league management.","icon": "👑","color": discord.Color.gold().value,"fields": [
@@ -892,9 +897,9 @@ class SetupCommands(commands.Cog):
         ]
         session_data["setup_pages"] = setup_pages
         session_data["total_pages"] = len(setup_pages)
-        
+
         self.active_setup_sessions[interaction.user.id] = session_data
-        
+
         await interaction.response.defer(ephemeral=True) # Defer response as sending page is next
         await self.send_setup_page(interaction, 0) # Send the first page
 
@@ -921,7 +926,7 @@ class SetupCommands(commands.Cog):
             all_valid = sorted(list(set(valid_log_channel_keys + valid_ann_channel_keys + ["reminders_channel_id"]))) # Ensure unique and sorted list of valid types
             await interaction.response.send_message(embed=EmbedBuilder.error("🚫 Invalid Type", f"Channel type must be one of: {', '.join(all_valid)}"), ephemeral=True)
             return
-        
+
         # Check bot permissions for sending messages in the selected channel
         if not channel.permissions_for(interaction.guild.me).send_messages:
             await interaction.response.send_message(embed=EmbedBuilder.error("🔒 Permissions Missing", f"The bot lacks 'Send Messages' permission in {channel.mention}. Please grant it and try again."), ephemeral=True)
@@ -978,11 +983,11 @@ class SetupCommands(commands.Cog):
 
         guild_id = interaction.guild.id
         config = get_server_config(guild_id) # Get the server's current configuration
-        
+
         embed = discord.Embed(title="🎮 Game Alerts & Notifications",
                               description="Manage settings for game reminders, DMs, and channel notifications.",
                               color=discord.Color.blue())
-        
+
         # Ensure notification_settings dictionary exists, copying defaults if necessary
         notification_settings = config.setdefault("notification_settings", get_default_config()["notification_settings"].copy())
         settings_text_parts = []
@@ -997,9 +1002,9 @@ class SetupCommands(commands.Cog):
                 settings_text_parts.append(f"• **{display_name}:** {channel_obj.mention if channel_obj else '`Not set`'}")
             elif isinstance(default_val, bool): # Check if the default value is a boolean for toggle settings
                 settings_text_parts.append(f"• **{display_name}:** {'✅ Enabled' if current_val else '❌ Disabled'}")
-        
+
         embed.add_field(name="📊 Current Settings", value="\n".join(settings_text_parts) or "Default notification settings are active.", inline=False)
-        
+
         # Create and send the view for managing these settings
         view = GameAlertsView(self.bot, guild_id, config) # Pass the config reference
         await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
@@ -1025,7 +1030,7 @@ class SetupCommands(commands.Cog):
         # Get default configurations to map keys and find potential matches
         default_permission_settings = get_default_config().get("permission_settings", {})
         role_type_map = {key: key.replace("_roles", "").replace("_", " ").title() for key in default_permission_settings.keys()}
-        
+
         default_log_channels = get_default_config().get("log_channels", {}).keys()
         default_ann_channels = get_default_config().get("announcement_channels", {}).keys()
         # Combine all channel types that can be configured via setchannel or setup
@@ -1059,7 +1064,7 @@ class SetupCommands(commands.Cog):
         if not team_matches and not any(role_matches.values()) and not any(channel_matches.values()):
             await interaction.followup.send(embed=EmbedBuilder.warning("⚠️ No Items Detected", "Could not detect any potential teams, roles, or channels based on common patterns or your threshold. Please use manual setup commands like `/addteam`, `/setrole`, `/setchannel`, or the interactive `/setup`."), ephemeral=True)
             return
-        
+
         # Create and send the confirmation view
         view = AutoSetupConfirmationView(self.bot, self.guild_id, team_matches, role_matches, channel_matches, role_type_map, channel_config_keys_for_autosetup, threshold, self)
         embed = discord.Embed(title="🚀 Auto-Setup Confirmation",
@@ -1082,7 +1087,7 @@ class SetupCommands(commands.Cog):
         for c_key, c_matches_list in channel_matches.items():
             if c_matches_list: chan_summary_parts.append(f"• **{c_key.replace('_',' ').title()}**: #{c_matches_list[0]['name']} ({c_matches_list[0]['similarity']:.0%})")
         embed.add_field(name="📢 Top Channel Matches (by type)", value="\n".join(chan_summary_parts) or "No matching channels found based on threshold.", inline=False)
-        
+
         embed.set_footer(text=f"Using similarity threshold: {threshold:.0%}. Adjust selections or cancel if matches are poor.")
         await interaction.followup.send(embed=embed, view=view, ephemeral=True)
 
@@ -1132,12 +1137,12 @@ class SetupCommands(commands.Cog):
             display_key_name = key.replace("_channel_id","").replace("_channel","").replace("_", " ").title()
             # Append " Channel" if the name doesn't already imply it
             if "_channel" in key and not display_key_name.lower().endswith("channel"): display_key_name += " Channel" 
-            
+
             # Retrieve the channel ID from the appropriate config section
             if key == "reminders_channel_id": channel_id = notif_settings.get(key)
             elif key in ann_channels: channel_id = ann_channels.get(key) # Check announcement channels first if key matches
             elif key in log_channels: channel_id = log_channels.get(key) # Fallback to log channels
-            
+
             channel = interaction.guild.get_channel(channel_id) if channel_id else None
             channels_text_parts.append(f"• **{display_key_name}:** {channel.mention if channel else '`Not set`'}")
         embed.add_field(name="📢 Configured Channels", value="\n".join(channels_text_parts) or "No specialized channels configured.", inline=False)
@@ -1159,7 +1164,7 @@ class SetupCommands(commands.Cog):
                  roster_cap_display = f"`{roster_cap_display}`"
 
             teams_text_parts.append(f"• {data.get('emoji','')} **{team_name}**: {role.mention if role else '`Role N/A`'} (Cap: {roster_cap_display})")
-        
+
         if len(sorted_team_names) > 10: # Indicate if more teams exist
             teams_text_parts.append(f"... and {len(sorted_team_names) - 10} more teams.")
         if not team_data: # Message if no teams are configured
@@ -1177,7 +1182,7 @@ class SetupCommands(commands.Cog):
                  current_val = notif_display.get(k, get_default_config()["notification_settings"][k]) # Get current or default value
                  notif_text_parts.append(f"• **{k.replace('_',' ').title()}:** {'✅ Enabled' if current_val else '❌ Disabled'}")
         embed.add_field(name="🔔 Game Notification Preferences", value="\n".join(notif_text_parts) or "Default preferences active. Use `/gamealerts` to configure.", inline=False)
-        
+
         embed.set_footer(text=f"Server ID: {interaction.guild.id} • Use /setup or specific commands to modify.")
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
@@ -1197,7 +1202,7 @@ class SetupCommands(commands.Cog):
 
         config = get_server_config(interaction.guild.id)
         announcement_channels_dict = config.get("announcement_channels", {})
-        
+
         if not announcement_channels_dict:
             await interaction.followup.send(embed=EmbedBuilder.warning("📢 No Channels Configured", "There are no announcement channels configured for this server. Use `/setchannel` or `/setup`."), ephemeral=True)
             return
@@ -1228,7 +1233,7 @@ class SetupCommands(commands.Cog):
             else:
                 failed_channels.append(f"ID {channel_id} (Not a TextChannel or Not Found)")
                 logger.warning(f"Update command: Channel ID {channel_id} (key: {channel_key}) is not a valid text channel or not found in guild {interaction.guild.id}")
-        
+
         # Provide feedback based on the results
         if sent_to_count > 0:
             success_message = f"📣 Message successfully sent to **{sent_to_count}** announcement channel(s)."
@@ -1253,7 +1258,7 @@ class GoToPageModal(Modal, title="Go to Page"):
         self.cog = cog_ref
         self.session = session_ref
         self.parent_interaction = parent_interaction # Interaction that opened this modal (e.g., button click)
-        
+
         total_pages = self.session.get("total_pages", 1)
         self.page_input = TextInput(
             label=f"Enter Page Number (1-{total_pages})",
@@ -1268,10 +1273,10 @@ class GoToPageModal(Modal, title="Go to Page"):
             page_num_str = self.page_input.value
             if not page_num_str.isdigit():
                 raise ValueError("Page number must be a number.")
-            
+
             page_num = int(page_num_str)
             total_pages = self.session.get("total_pages", 1)
-            
+
             if not 1 <= page_num <= total_pages:
                 raise ValueError(f"Page number must be between 1 and {total_pages}.")
 
@@ -1279,7 +1284,7 @@ class GoToPageModal(Modal, title="Go to Page"):
 
             # Defer the modal's interaction first
             await interaction.response.send_message(f"Navigating to page {page_num}...", ephemeral=True, delete_after=2)
-            
+
             # Use the parent_interaction (from the button click) to update the original setup message
             await self.cog.send_setup_page(self.parent_interaction, target_page_index)
 
@@ -1303,12 +1308,12 @@ class RosterCapModal(Modal, title="Edit Roster Cap"):
         # Set default value in the input field
         default_display_cap = current_cap_value if current_cap_value is not None else self.session_config.get("roster_cap", DEFAULT_ROSTER_CAP)
         self.cap_input.default = str(default_display_cap)
-        
+
         if self.target_key_or_global != "all_teams_global_cap":
             self.cap_input.label = f"Cap for Team: {self.target_key_or_global}"
         else:
             self.cap_input.label = "Global Default Roster Cap"
-            
+
         self.add_item(self.cap_input)
 
     async def on_submit(self, interaction: discord.Interaction):
@@ -1336,11 +1341,11 @@ class RosterCapModal(Modal, title="Edit Roster Cap"):
                 team_specific_conf["roster_cap"] = cap_value_int
                 log_detail_msg = f"Roster cap for team '{self.target_key_or_global}' to {cap_value_int} (was {old_cap})."
                 success_user_msg = f"Roster cap for team **{self.target_key_or_global}** staged to be **{cap_value_int}**."
-            
+
             # Log the staged change
             await log_action(self.guild, "SETUP (IN-SESSION)", interaction.user, f"Staged: {log_detail_msg}", "roster_cap_modal_submit")
             await interaction.response.send_message(embed=EmbedBuilder.success("📝 Roster Cap Staged", success_user_msg + "\nChanges will apply when the main setup is saved."), ephemeral=True)
-            
+
             # Attempt to refresh the main setup page if the cog and session are accessible
             if self.cog and self.user_id in self.cog.active_setup_sessions:
                 active_session = self.cog.active_setup_sessions[self.user_id]
@@ -1353,7 +1358,7 @@ class RosterCapModal(Modal, title="Edit Roster Cap"):
                         logger.warning(f"RosterCapModal: Failed to auto-refresh main setup page for user {self.user_id} in guild {self.guild.id}: {e_refresh}")
                 else:
                     logger.debug(f"RosterCapModal: No interaction_proxy found in session to refresh main setup page for user {self.user_id} in guild {self.guild.id}.")
-            
+
         except ValueError as ve:
             await interaction.response.send_message(embed=EmbedBuilder.error("🚫 Invalid Input", str(ve)), ephemeral=True)
         except Exception as e:
@@ -1396,12 +1401,12 @@ class SetupPageView(View): # Use imported View
         # Allow up to 4 interactive elements (rows 0-3), leaving row 4 for navigation
         for i, field_item in enumerate(self.page_data.get("fields", [])[:4]): 
             select_custom_id = f"setup_select_{self.session['current_page']}_{field_item['key']}"
-            
+
             if field_item["type"] == "role":
                 # Key for permission_settings, e.g., "admin_roles"
                 # Construct the actual config key expected in permission_settings
                 role_config_key_for_perms = f"{field_item['key'].replace('_role', '').strip()}_roles"
-                
+
                 # Determine max values allowed based on role type (some allow multiple)
                 max_vals = 1
                 if field_item["key"] in ["manage_teams", "admin", "moderator"]: # Roles that might allow multiple admins/mods/managers
@@ -1417,7 +1422,7 @@ class SetupPageView(View): # Use imported View
                 # Pass the correct config key for permission settings to the callback handler
                 select.callback = lambda inter, s=select, k=field_item['key'], rk=role_config_key_for_perms: self.select_callback_handler(inter, s, k, "role", rk)
                 self.add_item(select)
-            
+
             elif field_item["type"] == "channel":
                 select = ChannelSelect( # Use imported ChannelSelect
                     placeholder=f"Select {field_item['name']}",
@@ -1450,16 +1455,16 @@ class SetupPageView(View): # Use imported View
                     select.add_option(discord.SelectOption(label=f"{team_emoji} {team_n}", value=team_n)) # Use discord.SelectOption
                 if len(teams) > 23:  # Indicate if more teams exist
                     select.add_option(discord.SelectOption(label="More teams exist...", value="disabled_placeholder", emoji="..." )) # Use discord.SelectOption
-                
+
                 select.callback = self.roster_cap_team_select_modal_launcher
                 self.add_item(select)
-    
+
     async def text_input_modal_launcher(self, interaction: discord.Interaction, field_key: str):
         """Launches a modal for text input, e.g., global roster cap."""
         if interaction.user.id != self.user_id:
             await interaction.response.send_message("This is not your active setup session.", ephemeral=True)
             return
-        
+
         if field_key == "global_roster_cap":
             current_cap_val = self.session["config"].get("roster_cap", DEFAULT_ROSTER_CAP)
             modal = RosterCapModal(self.cog, self.session["config"], self.guild, self.user_id, "all_teams_global_cap", current_cap_val)
@@ -1469,7 +1474,7 @@ class SetupPageView(View): # Use imported View
             modal = Modal(title=f"Set {self.config_display_names.get(field_key, field_key.title())}") # Use imported Modal
             text_input_field = TextInput(label="Enter Value", placeholder="Enter the new value", required=True) # Use imported TextInput
             modal.add_item(text_input_field)
-            
+
             async def generic_modal_submit(modal_interaction: discord.Interaction):
                 value = text_input_field.value
                 # Store the value directly in the session config
@@ -1487,7 +1492,7 @@ class SetupPageView(View): # Use imported View
         if interaction.user.id != self.user_id:
             await interaction.response.send_message("This is not your active setup session.", ephemeral=True)
             return
-        
+
         selected_target_key = interaction.data.get("values", [None])[0]
         if not selected_target_key or selected_target_key == "disabled_placeholder":
             await interaction.response.defer() # Defer if it's a disabled placeholder or no value
@@ -1500,7 +1505,7 @@ class SetupPageView(View): # Use imported View
             team_conf = self.session["config"].get("team_data", {}).get(selected_target_key, {})
             # If team specific cap exists, use it. Otherwise, fall back to global cap.
             current_cap_val = team_conf.get("roster_cap", self.session["config"].get("roster_cap", DEFAULT_ROSTER_CAP))
-            
+
         modal = RosterCapModal(self.cog, self.session["config"], self.guild, self.user_id, selected_target_key, current_cap_val)
         await interaction.response.send_modal(modal)
 
@@ -1522,9 +1527,9 @@ class SetupPageView(View): # Use imported View
 
             perm_settings_dict = live_config.setdefault("permission_settings", {})
             role_list_for_type = perm_settings_dict.setdefault(role_config_key_for_perms, [])
-            
+
             selected_values = select_obj.values # This is a list of Role objects
-            
+
             if not selected_values: # If the selection is empty (e.g., "None" or cleared)
                 role_list_for_type.clear()
                 log_entry_detail = f"Cleared **{display_name_for_log}**."
@@ -1535,11 +1540,11 @@ class SetupPageView(View): # Use imported View
                 role_list_for_type.extend(selected_role_ids)
                 mentions = ", ".join([r.mention for r in selected_values])
                 log_entry_detail = f"Set **{display_name_for_log}** to: {mentions}"
-        
+
         elif item_type == "channel":
             actual_config_key_mapped = self.session["key_mapping"].get(field_ui_key)
             selected_channel_obj = select_obj.values[0] if select_obj.values else None
-            
+
             if actual_config_key_mapped:
                 target_dict_for_channel = None
                 if field_ui_key == "reminders_channel": # Special key mapped to notification_settings
@@ -1548,7 +1553,7 @@ class SetupPageView(View): # Use imported View
                     target_dict_for_channel = live_config.setdefault("announcement_channels", {})
                 else: # Assume it's a log channel key
                     target_dict_for_channel = live_config.setdefault("log_channels", {})
-                
+
                 if selected_channel_obj:
                     target_dict_for_channel[actual_config_key_mapped] = selected_channel_obj.id
                     log_entry_detail = f"Set **{display_name_for_log}** to {selected_channel_obj.mention}"
@@ -1562,7 +1567,7 @@ class SetupPageView(View): # Use imported View
 
         if log_entry_detail:
             await log_action(self.guild, "SETUP (IN-SESSION)", interaction.user, log_entry_detail, "setup_select_change")
-        
+
         # Defer the response to allow time for logging and page refresh
         await interaction.response.defer() 
         # Refresh the current page to show updated 'Current' values
@@ -1679,16 +1684,16 @@ class SetupPageView(View): # Use imported View
         if interaction.user.id != self.user_id:
             await interaction.response.send_message("This is not your active setup session.", ephemeral=True)
             return
-        
+
         try:
             save_guild_config(self.guild.id, self.session["config"])
             await log_action(self.guild, "SETUP COMPLETE", interaction.user, "Server configuration saved via interactive /setup.", "setup_save_exit")
-            
+
             embed = EmbedBuilder.success("💾 Configuration Saved!", "Server configuration has been successfully saved.")
             perm_settings = self.session["config"].get("permission_settings", {})
             # Count the total number of roles assigned across all permission categories
             roles_set_count = sum(len(r_list) for r_list in perm_settings.values() if isinstance(r_list, list) and r_list)
-            
+
             # Count configured channels
             log_ch_count = sum(1 for _ in self.session["config"].get("log_channels", {}).values() if _)
             ann_ch_count = sum(1 for _ in self.session["config"].get("announcement_channels", {}).values() if _)
@@ -1705,7 +1710,7 @@ class SetupPageView(View): # Use imported View
                                    "• View all current settings anytime with `/settings`.\n"
                                    "• Explore other commands like `/gamealerts` for more specific configurations."), 
                             inline=False)
-            
+
             await interaction.response.edit_message(embed=embed, view=None)
         except Exception as e:
             logger.error(f"Failed to save config for guild {self.guild.id} via /setup: {e}", exc_info=True)
@@ -1725,14 +1730,14 @@ class AutoSetupConfirmationView(View): # Use imported View
         self.team_matches, self.role_matches = team_matches, role_matches
         self.channel_matches, self.role_type_map = channel_matches, role_type_map
         self.channel_config_keys, self.threshold, self.cog = channel_config_keys, threshold, setup_cog_ref
-        
+
         # Store user selections
         self.selected_teams_by_role_id: Dict[int, Dict] = {} # role_id: team_info (for teams)
         # Stores list of role IDs for each permission type (e.g., "admin": [123, 456])
         self.selected_roles_by_type: Dict[str, List[int]] = {} 
         # Stores list of channel IDs for each channel type (e.g., "transactions": [789])
         self.selected_channels_by_type: Dict[str, List[int]] = {} 
-        
+
         self._add_team_select()
         self._add_role_selects()
         self._add_channel_selects()
@@ -1757,13 +1762,13 @@ class AutoSetupConfirmationView(View): # Use imported View
             top_match = role_specific_matches[0]
             placeholder_text = f"{display_name}"
             if top_match: placeholder_text += f" (Best: {top_match['name']})"
-            
+
             if items_in_row >= 2: # Max 2 role selects per row
                 current_row +=1; items_in_row = 0
             if current_row > 3: # Limit to 3 rows of role selects
                 logger.info(f"AutoSetup: Too many role types for guild {self.guild_id}. Stopping role selects at row {current_row-1}.")
                 break
-            
+
             select = Select(placeholder=placeholder_text, min_values=0, max_values=min(len(role_specific_matches), 5), custom_id=f"autosetup_role_{role_config_key}", row=current_row) # Use imported Select
             select.add_option(discord.SelectOption(label="None (Do not set this role)", value="none_role_option")) # Use discord.SelectOption
             # Add top few matches for this role type
@@ -1774,7 +1779,7 @@ class AutoSetupConfirmationView(View): # Use imported View
                 if role_obj and match_info["role_id"] not in added_role_ids:
                     select.add_option(discord.SelectOption(label=f"{role_obj.name} ({match_info['similarity']:.0%})", value=str(match_info["role_id"]))) # Use discord.SelectOption
                     added_role_ids.add(match_info["role_id"])
-            
+
             select.callback = lambda inter, rck=role_config_key: self._role_select_callback(inter, rck)
             self.add_item(select)
             items_in_row +=1
@@ -1792,7 +1797,7 @@ class AutoSetupConfirmationView(View): # Use imported View
             display_name_placeholder = channel_config_key.replace("_roles","").replace("_channel_id","").replace("_channel","").replace("_", " ").title()
             placeholder_text = f"{display_name_placeholder} Ch."
             if top_match and top_match.get('name'): placeholder_text += f" (Best: #{top_match['name']})"
-            
+
             if items_in_row >= 2: # Max 2 channel selects per row
                 current_row +=1; items_in_row = 0
             if current_row > 6: # Limit to 3 rows of channel selects (rows 4, 5, 6)
@@ -1813,7 +1818,7 @@ class AutoSetupConfirmationView(View): # Use imported View
                     if chan.id not in added_channel_ids_for_select:
                         select.add_option(discord.SelectOption(label=f"#{chan.name} (Other)", value=str(chan.id))) # Use discord.SelectOption
                         if len(select.options) >= 25: break # Cap options at 25
-            
+
             select.callback = lambda inter, cck=channel_config_key: self._channel_select_callback(inter, cck)
             self.add_item(select)
             items_in_row +=1
@@ -1825,11 +1830,11 @@ class AutoSetupConfirmationView(View): # Use imported View
             if hasattr(item, 'row') and item.row is not None:
                 max_used_row = max(max_used_row, item.row)
         control_button_row = min(max_used_row + 1, 4) # Place on next available row, max row 4.
-        
+
         confirm = Button(label="✅ Confirm & Save Selected", style=discord.ButtonStyle.success, custom_id="autosetup_confirm", row=control_button_row) # Use imported Button
         confirm.callback = self._confirm_callback
         self.add_item(confirm)
-        
+
         cancel = Button(label="❌ Cancel Auto-Setup", style=discord.ButtonStyle.danger, custom_id="autosetup_cancel", row=control_button_row) # Use imported Button
         cancel.callback = self._cancel_callback
         self.add_item(cancel)
@@ -1848,27 +1853,27 @@ class AutoSetupConfirmationView(View): # Use imported View
     async def _role_select_callback(self, interaction: discord.Interaction, role_config_key: str):
         selected_values_str = interaction.data.get("values", [])
         selected_role_ids = []
-        
+
         if selected_values_str and "none_role_option" not in selected_values_str:
             # Convert selected IDs to integers
             selected_role_ids = [int(val) for val in selected_values_str]
-        
+
         # Store the list of selected role IDs for this configuration key
         self.selected_roles_by_type[role_config_key] = selected_role_ids
-        
+
         await interaction.response.defer()
 
     async def _channel_select_callback(self, interaction: discord.Interaction, channel_config_key: str):
         selected_values_str = interaction.data.get("values", [])
         selected_channel_ids = []
-        
+
         if selected_values_str and "none_channel_option" not in selected_values_str:
             # Get the single selected channel ID (max_values=1 for channels)
             selected_channel_ids = [int(selected_values_str[0])]
-        
+
         # Store the list of selected channel IDs (will contain 0 or 1 element)
         self.selected_channels_by_type[channel_config_key] = selected_channel_ids
-        
+
         await interaction.response.defer()
 
     async def _confirm_callback(self, interaction: discord.Interaction):
@@ -1884,7 +1889,7 @@ class AutoSetupConfirmationView(View): # Use imported View
         if not guild:
             await interaction.followup.send(embed=EmbedBuilder.error("❌ Guild Error", "Could not retrieve guild information."), ephemeral=True)
             return
-            
+
         config = get_server_config(self.guild_id)
         log_summary = ["Auto-Setup Confirmed:"]
 
@@ -1918,7 +1923,7 @@ class AutoSetupConfirmationView(View): # Use imported View
                 chan_id_val = selected_channel_ids[0] # Take the first (and likely only) channel ID
                 chan_obj = guild.get_channel(chan_id_val)
                 chan_mention_log = chan_obj.name if chan_obj else f'ID {chan_id_val}'
-                
+
                 if chan_conf_key == "reminders_channel_id": # Special key for notification_settings
                     notif_set_dict[chan_conf_key] = chan_id_val
                 # Check against keys defined in default config for announcement channels
@@ -1927,10 +1932,10 @@ class AutoSetupConfirmationView(View): # Use imported View
                 else: # Assume it's a log channel key
                     log_ch_dict[chan_conf_key] = chan_id_val
                 log_summary.append(f"• Channel **{chan_conf_key.replace('_',' ').title()}**: #{chan_mention_log}")
-        
+
         save_guild_config(self.guild_id, config)
         await log_action(guild, "SETUP (AUTO)", interaction.user, "\n".join(log_summary), "autosetup_confirmed")
-        
+
         final_embed = EmbedBuilder.success("✨ Auto-Setup Complete!", "Selected configurations have been automatically applied and saved to the server's settings.")
         # Edit the original message (which was deferred)
         await interaction.edit_original_response(embed=final_embed, view=None) 
@@ -1966,7 +1971,7 @@ class TeamRemoveConfirmationView(View): # Use imported View
         confirm = Button(label="Confirm Removal", style=discord.ButtonStyle.danger, custom_id="confirm_remove_final", row=1) # Use imported Button
         confirm.callback = self.confirm_remove_callback
         self.add_item(confirm)
-        
+
         cancel = Button(label="Cancel", style=discord.ButtonStyle.grey, custom_id="cancel_remove_final", row=1) # Use imported Button
         cancel.callback = self.cancel_remove_callback
         self.add_item(cancel)
@@ -1994,7 +1999,7 @@ class TeamRemoveConfirmationView(View): # Use imported View
 
             role_delete_status_log = ""
             role_delete_status_msg = ""
-            
+
             # Handle role deletion if requested and role exists
             if self.should_delete_role_flag and self.role_id:
                 role_obj_to_delete = interaction.guild.get_role(self.role_id)
@@ -2016,17 +2021,17 @@ class TeamRemoveConfirmationView(View): # Use imported View
                 role_delete_status_log = "Associated role was explicitly PRESERVED."
                 role_delete_status_msg = " The associated role was not deleted as per your choice."
             # No specific log needed if no role_id was associated or deletion wasn't requested.
-            
+
             if removed_from_data or removed_from_legacy: # If the team was actually found and removed from config
                 save_guild_config(self.guild_id, self.guild_config) # Save changes to file/DB
                 final_log_msg = f"Removed team '{self.team_name}'. {role_delete_status_log}"
                 await log_action(interaction.guild, "SETUP", interaction.user, final_log_msg, "removeteam_confirmed")
-                
+
                 final_user_msg = f"Team **{self.team_name}** has been removed from the configuration.{role_delete_status_msg}"
                 await interaction.edit_original_response(embed=EmbedBuilder.success("🗑️ Team Removed", final_user_msg), view=None)
             else: # If team wasn't found in config initially
                 await interaction.edit_original_response(embed=EmbedBuilder.error("❓ Not Found", f"Team **{self.team_name}** was not found in the configuration. No changes were made."), view=None)
-            
+
             self.stop() # Stop the view
         except Exception as e:
             logger.error(f"Error confirming team removal for guild {self.guild_id}, team {self.team_name}: {e}", exc_info=True)
