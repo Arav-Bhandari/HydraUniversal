@@ -1,9 +1,0 @@
-{
-  "message_log_channel": null,
-  "honeypot_channels": [],
-  "watchlist_channels": [],
-  "red_flag_keywords": [],
-  "raid_threshold": 5,
-  "role_limits": {},
-  "approved_bots": []
-}

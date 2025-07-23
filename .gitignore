@@ -5,3 +5,6 @@
 discord.log
 premium_security_data/
 __pycache__/
+
+# JSON configuration files
+*.json
