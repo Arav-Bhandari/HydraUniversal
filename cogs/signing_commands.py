@@ -339,6 +339,24 @@ class PremiumOfferView(discord.ui.View):
                 return await interaction.followup.send(embed=error_embed, ephemeral=True)
 
             await member.add_roles(team_role, reason=f"Accepted contract offer - {self.offer_id}")
+            
+            # Remove free agent role if they have it
+            guild_config = get_server_config(self.guild.id)
+            permission_settings = guild_config.get("permission_settings", {})
+            free_agent_role_ids = permission_settings.get("free_agent_roles", [])
+            
+            roles_to_remove = []
+            for role_id in free_agent_role_ids:
+                fa_role = self.guild.get_role(role_id)
+                if fa_role and fa_role in member.roles:
+                    roles_to_remove.append(fa_role)
+            
+            if roles_to_remove:
+                try:
+                    await member.remove_roles(*roles_to_remove, reason=f"Signed to team - removing free agent status")
+                except Exception as e:
+                    logger.warning(f"Failed to remove free agent role from {member.id}: {e}")
+            
             offer_data["status"] = OfferStatus.ACCEPTED.value
             offer_data["accepted_at"] = datetime.now(pytz.utc).timestamp()
             save_json(OFFERS_FILE, offers)
@@ -526,6 +544,24 @@ class SignConfirmationView(discord.ui.View):
 
         try:
             await self.player_to_sign.add_roles(team_role, reason=f"Signed by {self.cmd_user.name}")
+            
+            # Remove free agent role if they have it
+            guild_config = get_server_config(interaction.guild.id)
+            permission_settings = guild_config.get("permission_settings", {})
+            free_agent_role_ids = permission_settings.get("free_agent_roles", [])
+            
+            roles_to_remove = []
+            for role_id in free_agent_role_ids:
+                fa_role = interaction.guild.get_role(role_id)
+                if fa_role and fa_role in self.player_to_sign.roles:
+                    roles_to_remove.append(fa_role)
+            
+            if roles_to_remove:
+                try:
+                    await self.player_to_sign.remove_roles(*roles_to_remove, reason=f"Signed to team - removing free agent status")
+                except Exception as e:
+                    logger.warning(f"Failed to remove free agent role from {self.player_to_sign.id}: {e}")
+                    
         except Exception as e:
             logger.error(f"Direct sign role add failed: {e}")
             await interaction.response.edit_message(embed=PremiumEmbedBuilder.create_base_embed(

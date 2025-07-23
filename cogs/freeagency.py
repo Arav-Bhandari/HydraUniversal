@@ -429,7 +429,7 @@ class FreeAgencyManagerCog(commands.Cog):
                                  expiration_time_str: str,
                                  salary: Optional[float]) -> bool:
         """
-        Delegates the actual offer creation and DM sending to EnhancedSigningCommands.
+        Creates and sends an offer using the signing cog's offer functionality.
         This is called by the InitiateOfferModal's submit action.
         """
         signing_cog = self._get_signing_cog()
@@ -437,16 +437,31 @@ class FreeAgencyManagerCog(commands.Cog):
             await interaction.followup.send(embed=EmbedBuilder.error("Cog Missing", "EnhancedSigningCommands cog not loaded. Cannot process offer."), ephemeral=True)
             return False
 
-        # Assumes EnhancedSigningCommands has a method like this to handle offer creation requests.
-        # It takes the interaction to allow for followup messages.
-        return await signing_cog.handle_offer_creation_request(
-            interaction=interaction,
-            free_agent_user=free_agent_user,
-            offering_manager=offering_manager,
-            contract_details=contract_details,
-            expiration_time_str=expiration_time_str,
-            salary=salary
-        )
+        try:
+            # Get the free agent as a member object
+            fa_member = interaction.guild.get_member(free_agent_user.id)
+            if not fa_member:
+                await interaction.followup.send(embed=EmbedBuilder.error("Member Not Found", "Free agent is not a member of this server."), ephemeral=True)
+                return False
+            
+            # Create a mock interaction for the signing cog's offer command
+            # We'll use the offer command directly but bypass the decorator checks
+            guild_config = get_server_config(interaction.guild.id)
+            
+            # Call the signing cog's internal offer creation logic
+            await signing_cog.offer.callback(
+                signing_cog,
+                interaction,
+                fa_member,
+                contract_details,
+                expiration_time_str,
+                salary
+            )
+            return True
+        except Exception as e:
+            logger.error(f"Error sending offer from LFT: {e}", exc_info=True)
+            await interaction.followup.send(embed=EmbedBuilder.error("Offer Failed", "An error occurred while sending the offer."), ephemeral=True)
+            return False
     
     # --- Method to process player applications (for /lfp) ---
     async def _process_player_application(self, interaction: discord.Interaction, 
@@ -531,7 +546,7 @@ class FreeAgencyManagerCog(commands.Cog):
         details="Any additional details about yourself or what you seek (e.g., 'great comms', 'active player')"
     )
     async def lft(self, interaction: discord.Interaction, looking_for: str = "Any team", details: str = "Ready to play!"):
-        await interaction.response.defer(ephemeral=False) # Respond publicly
+        await interaction.response.defer(ephemeral=True) # Respond privately first
 
         guild_config = get_server_config(interaction.guild.id)
         if not guild_config:
@@ -544,6 +559,14 @@ class FreeAgencyManagerCog(commands.Cog):
         if current_team:
             return await interaction.followup.send(embed=EmbedBuilder.warning("Already on a Team", f"You are currently on **{current_team}**. Please use `/demand` to become a free agent first."), ephemeral=True)
 
+        # Check if user has free agent role
+        permission_settings = guild_config.get("permission_settings", {})
+        free_agent_role_ids = permission_settings.get("free_agent_roles", [])
+        has_free_agent_role = any(role.id in free_agent_role_ids for role in fa_user.roles)
+        
+        if not has_free_agent_role:
+            return await interaction.followup.send(embed=EmbedBuilder.error("Not a Free Agent", "You must have the free agent role to use this command. Contact staff if you believe this is an error."), ephemeral=True)
+
         is_suspended, suspension_reason = self._is_player_suspended(interaction.guild.id, fa_user.id)
         if is_suspended:
             error_embed = EmbedBuilder.error(
@@ -552,6 +575,16 @@ class FreeAgencyManagerCog(commands.Cog):
             )
             error_embed.add_field(name="Reason", value=suspension_reason, inline=False)
             return await interaction.followup.send(embed=error_embed, ephemeral=True)
+
+        # Get free agency channel
+        announcement_channels = guild_config.get("announcement_channels", {})
+        free_agency_channel_id = announcement_channels.get("free_agency")
+        if not free_agency_channel_id:
+            return await interaction.followup.send(embed=EmbedBuilder.error("Channel Not Configured", "Free agency channel is not configured. Please contact an administrator."), ephemeral=True)
+        
+        free_agency_channel = interaction.guild.get_channel(free_agency_channel_id)
+        if not free_agency_channel:
+            return await interaction.followup.send(embed=EmbedBuilder.error("Channel Not Found", "Free agency channel could not be found. Please contact an administrator."), ephemeral=True)
 
         # --- Create the LFT Embed ---
         fa_embed = EmbedBuilder.create_base_embed(
@@ -567,14 +600,18 @@ class FreeAgencyManagerCog(commands.Cog):
         fa_embed.set_footer(text=f"Posted by {fa_user.display_name} | Use the button to make an offer.", icon_url=fa_user.display_avatar.url)
 
         # --- Create the View with the Offer Button ---
-        # Pass guild context to the view for branding and potential future use.
         view = FreeAgentView(fa_user, details, looking_for, guild_config, self.bot, interaction.guild)
         
-        await interaction.followup.send(embed=fa_embed, view=view)
+        # Post to free agency channel
+        try:
+            await free_agency_channel.send(embed=fa_embed, view=view)
+            await interaction.followup.send(embed=EmbedBuilder.success("LFT Posted", f"Your LFT post has been sent to {free_agency_channel.mention}."), ephemeral=True)
+        except discord.Forbidden:
+            return await interaction.followup.send(embed=EmbedBuilder.error("Permission Error", f"Bot lacks permission to send messages in {free_agency_channel.mention}."), ephemeral=True)
 
         # --- Log the LFT post ---
-        await _log_transaction(
-            self.bot, interaction.guild, TransactionType.OFFER, fa_user, None, # Player is FA, no team yet
+        await self._log_transaction(
+            interaction.guild, TransactionType.OFFER, fa_user, None, # Player is FA, no team yet
             action_by=fa_user,
             details=f"Looking for: '{looking_for}'. Details: '{details}'. Post made by {fa_user.display_name}.",
             roster_info=None
@@ -587,16 +624,39 @@ class FreeAgencyManagerCog(commands.Cog):
         details="Any additional details about the team or what you're looking for (e.g., 'must have mic', 'competitive league')"
     )
     async def lfp(self, interaction: discord.Interaction, player_needs: str = "Any players", details: str = "Join our competitive league!"):
-        await interaction.response.defer(ephemeral=False) # Respond publicly
+        await interaction.response.defer(ephemeral=True) # Respond privately first
 
         guild_config = get_server_config(interaction.guild.id)
         if not guild_config:
             return await interaction.followup.send(embed=EmbedBuilder.error("Configuration Error", "Server configuration not found. Please ensure bot setup is complete."), ephemeral=True)
 
+        # Check if user has coaching permissions
+        permission_settings = guild_config.get("permission_settings", {})
+        coach_role_ids = (permission_settings.get("gm_roles", []) + 
+                         permission_settings.get("fo_roles", []) + 
+                         permission_settings.get("hc_roles", []) + 
+                         permission_settings.get("ac_roles", []) +
+                         permission_settings.get("manage_teams_roles", []))
+        
+        has_coach_role = any(role.id in coach_role_ids for role in interaction.user.roles)
+        
+        if not has_coach_role and not interaction.user.guild_permissions.administrator:
+            return await interaction.followup.send(embed=EmbedBuilder.error("Permission Denied", "You must have a coaching role to use this command."), ephemeral=True)
+
         # Infer team name from the user posting the command
         team_name = await detect_team(interaction.user)
         if not team_name:
             return await interaction.followup.send(embed=EmbedBuilder.error("Team Error", "You are not associated with a configured team. Please use setup commands to define your team or ensure your role is correctly assigned."), ephemeral=True)
+
+        # Get free agency channel
+        announcement_channels = guild_config.get("announcement_channels", {})
+        free_agency_channel_id = announcement_channels.get("free_agency")
+        if not free_agency_channel_id:
+            return await interaction.followup.send(embed=EmbedBuilder.error("Channel Not Configured", "Free agency channel is not configured. Please contact an administrator."), ephemeral=True)
+        
+        free_agency_channel = interaction.guild.get_channel(free_agency_channel_id)
+        if not free_agency_channel:
+            return await interaction.followup.send(embed=EmbedBuilder.error("Channel Not Found", "Free agency channel could not be found. Please contact an administrator."), ephemeral=True)
 
         # Get manager role IDs and then manager user IDs from config
         team_data = guild_config.get("team_data", {}).get(team_name, {})
@@ -657,17 +717,47 @@ class FreeAgencyManagerCog(commands.Cog):
             lfp_guild=interaction.guild # Pass guild context
         )
         
-        await interaction.followup.send(embed=lfp_embed, view=view)
+        # Post to free agency channel
+        try:
+            await free_agency_channel.send(embed=lfp_embed, view=view)
+            await interaction.followup.send(embed=EmbedBuilder.success("LFP Posted", f"Your LFP post has been sent to {free_agency_channel.mention}."), ephemeral=True)
+        except discord.Forbidden:
+            return await interaction.followup.send(embed=EmbedBuilder.error("Permission Error", f"Bot lacks permission to send messages in {free_agency_channel.mention}."), ephemeral=True)
 
         # --- Log this action ---
-        await _log_transaction(
-            self.bot, interaction.guild, TransactionType.OFFER, # Using OFFER type for recruitment log
+        await self._log_transaction(
+            interaction.guild, TransactionType.OFFER, # Using OFFER type for recruitment log
             None, team_name, # Player is None for LFP, Team is the posting team
             action_by=interaction.user,
             details=f"Team '{team_name}' posted LFP: Needs='{player_needs}', Details='{details}'. Managers notified: {len(team_manager_user_ids)}.",
             roster_info=None
         )
     
+    async def _initiate_offer_from_lft(self, interaction: discord.Interaction):
+        """Handle the offer button click from LFT posts"""
+        # Get the free agent from the view context
+        fa_user = self._get_fa_user_from_view_context(interaction)
+        if not fa_user:
+            await interaction.response.send_message(embed=EmbedBuilder.error("Error", "Could not find the free agent user from this post."), ephemeral=True)
+            return
+        
+        guild_config = get_server_config(interaction.guild.id)
+        
+        # Check if the user making the offer can manage team signings
+        if not await self._can_manage_team_signings(interaction, guild_config):
+            await interaction.response.send_message(embed=EmbedBuilder.error("Permission Denied", "You don't have permission to make offers."), ephemeral=True)
+            return
+        
+        # Check if user is on a team
+        offering_team = await detect_team(interaction.user)
+        if not offering_team:
+            await interaction.response.send_message(embed=EmbedBuilder.error("Team Error", "You are not associated with a team."), ephemeral=True)
+            return
+        
+        # Open the offer modal
+        modal = InitiateOfferModal(fa_user, guild_config, self.bot, interaction)
+        await interaction.response.send_modal(modal)
+
     # --- Helper method to retrieve FA User from View Context (Crucial for Button Callback) ---
     def _get_fa_user_from_view_context(self, interaction: discord.Interaction) -> Optional[discord.User]:
         """

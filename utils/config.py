@@ -73,8 +73,8 @@ def get_default_config() -> dict:
             "free_agent_roles": []
         },
         "announcement_channels": {
-             "announcements_channel_id": None,
-             "reminders_channel_id": None,
+             "announcements": None,
+             "free_agency": None,
         },
         "reporting_settings": { # New section for silver game reporting channels
             "silver_game_report_channel": None, # For /scorereport
