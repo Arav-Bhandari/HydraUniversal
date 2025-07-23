@@ -33,7 +33,7 @@ class TransactionType(Enum):
 class OfferStatus(Enum):
     ACTIVE = "active"
     ACCEPTED = "accepted"
-    DECLINED = "declined"
+    DECLINED = "declINED"
     EXPIRED = "expired"
     RESCINDED = "rescinded"
 
@@ -139,7 +139,7 @@ class PremiumEmbedBuilder:
             }
         }
         config = type_config[transaction_type]
-        
+
         guild_config = get_server_config(guild.id)
         team_data = guild_config.get("team_data", {}).get(team_name, {})
         team_role_id = team_data.get("role_id")
@@ -169,7 +169,7 @@ class PremiumEmbedBuilder:
             embed.add_field(name=roster_name, value=roster_value, inline=False)
         if details:
             embed.add_field(name="📝 Details", value=f"```\n{details}\n```" if len(details) > 50 else f"`{details}`", inline=False)
-        
+
         return PremiumEmbedBuilder.add_premium_footer(embed, guild)
 
 def get_emoji_url(emoji_str: Optional[str]) -> Optional[str]:
@@ -212,7 +212,7 @@ class SalaryCapModal(discord.ui.Modal, title="Set Salary Cap"):
             guild_key = str(interaction.guild.id)
             if guild_key not in guild_data:
                 guild_data[guild_key] = {"team_data": {}}
-            
+
             if self.scope == "team":
                 if self.team_name not in guild_data[guild_key]["team_data"]:
                     guild_data[guild_key]["team_data"][self.team_name] = {}
@@ -339,24 +339,24 @@ class PremiumOfferView(discord.ui.View):
                 return await interaction.followup.send(embed=error_embed, ephemeral=True)
 
             await member.add_roles(team_role, reason=f"Accepted contract offer - {self.offer_id}")
-            
+
             # Remove free agent role if they have it
             guild_config = get_server_config(self.guild.id)
             permission_settings = guild_config.get("permission_settings", {})
             free_agent_role_ids = permission_settings.get("free_agent_roles", [])
-            
+
             roles_to_remove = []
             for role_id in free_agent_role_ids:
                 fa_role = self.guild.get_role(role_id)
                 if fa_role and fa_role in member.roles:
                     roles_to_remove.append(fa_role)
-            
+
             if roles_to_remove:
                 try:
                     await member.remove_roles(*roles_to_remove, reason=f"Signed to team - removing free agent status")
                 except Exception as e:
                     logger.warning(f"Failed to remove free agent role from {member.id}: {e}")
-            
+
             offer_data["status"] = OfferStatus.ACCEPTED.value
             offer_data["accepted_at"] = datetime.now(pytz.utc).timestamp()
             save_json(OFFERS_FILE, offers)
@@ -544,24 +544,24 @@ class SignConfirmationView(discord.ui.View):
 
         try:
             await self.player_to_sign.add_roles(team_role, reason=f"Signed by {self.cmd_user.name}")
-            
+
             # Remove free agent role if they have it
             guild_config = get_server_config(interaction.guild.id)
             permission_settings = guild_config.get("permission_settings", {})
             free_agent_role_ids = permission_settings.get("free_agent_roles", [])
-            
+
             roles_to_remove = []
             for role_id in free_agent_role_ids:
                 fa_role = interaction.guild.get_role(role_id)
                 if fa_role and fa_role in self.player_to_sign.roles:
                     roles_to_remove.append(fa_role)
-            
+
             if roles_to_remove:
                 try:
                     await self.player_to_sign.remove_roles(*roles_to_remove, reason=f"Signed to team - removing free agent status")
                 except Exception as e:
                     logger.warning(f"Failed to remove free agent role from {self.player_to_sign.id}: {e}")
-                    
+
         except Exception as e:
             logger.error(f"Direct sign role add failed: {e}")
             await interaction.response.edit_message(embed=PremiumEmbedBuilder.create_base_embed(
@@ -605,220 +605,7 @@ class SignConfirmationView(discord.ui.View):
     async def cancel_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.disable_all_items()
         cancel_embed = PremiumEmbedBuilder.create_base_embed(
-            "Signing Cancelled",
-            "The direct signing process was cancelled.",
-            PremiumEmbedBuilder.COLORS['neutral']
-        )
-        cancel_embed.set_author(name=interaction.guild.name, icon_url=interaction.guild.icon.url if interaction.guild.icon else discord.Embed.Empty)
-        await interaction.response.edit_message(embed=cancel_embed, view=self)
-
-class EnhancedSigningCommands(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-        self.transaction_cache = {}
-        self.offer_cache = {}
-        self.lock = asyncio.Lock()  # Added for thread-safe file operations
-        self.check_expired_offers.start()
-        self.cleanup_old_transactions.start()
-        if not os.path.exists(SUSPENSIONS_FILE):
-            save_json(SUSPENSIONS_FILE, {})
-
-    def cog_unload(self):
-        self.check_expired_offers.cancel()
-        self.cleanup_old_transactions.cancel()
-
-    async def load_offers(self) -> Dict:
-        """Load offers with thread safety."""
-        async with self.lock:
-            try:
-                return load_json(OFFERS_FILE)
-            except FileNotFoundError:
-                logger.warning(f"{OFFERS_FILE} not found, initializing empty offers.")
-                return {}
-            except json.JSONDecodeError:
-                logger.error(f"{OFFERS_FILE} is malformed, initializing empty offers.")
-                return {}
-            except Exception as e:
-                logger.error(f"Error loading {OFFERS_FILE}: {e}", exc_info=True)
-                return {}
-
-    async def save_offers(self, offers: Dict):
-        """Save offers with thread safety."""
-        async with self.lock:
-            try:
-                save_json(OFFERS_FILE, offers)
-            except Exception as e:
-                logger.error(f"Error saving {OFFERS_FILE}: {e}", exc_info=True)
-
-    def _get_team_stats(self, guild: discord.Guild, team_name: str, 
-                       guild_config: dict) -> TeamStats:
-        team_data = guild_config.get("team_data", {}).get(team_name, {})
-        roster_cap = team_data.get("roster_cap", guild_config.get("roster_cap", DEFAULT_ROSTER_CAP))
-        team_role_id = team_data.get("role_id")
-        salary_cap = team_data.get("salary_cap", 0.0)
-        current_salary = team_data.get("current_salary", 0.0)
-        current_size = 0
-        if team_role_id:
-            team_role = guild.get_role(int(team_role_id))
-            if team_role:
-                current_size = len(team_role.members)
-        available_slots = max(0, roster_cap - current_size)
-        utilization_percent = (current_size / roster_cap * 100) if roster_cap > 0 else 0
-        return TeamStats(
-            current_size=current_size,
-            roster_cap=roster_cap,
-            available_slots=available_slots,
-            utilization_percent=utilization_percent,
-            salary_cap=salary_cap,
-            current_salary=current_salary
-        )
-
-    async def _can_manage_team_signings(self, interaction: discord.Interaction, 
-                                      guild_config: dict) -> bool:
-        if interaction.user.guild_permissions.administrator:
-            return True
-        permission_settings = guild_config.get("permission_settings", {})
-        allowed_role_keys = ["fo_roles", "gm_roles", "hc_roles", "ac_roles", "manage_teams_roles"]
-        user_role_ids = {str(role.id) for role in interaction.user.roles}
-        for role_key in allowed_role_keys:
-            for conf_id_str in permission_settings.get(role_key, []):
-                if str(conf_id_str) in user_role_ids:
-                    return True
-        return False
-
-    def _get_user_max_role_level(self, user: discord.Member, guild_config: dict, hierarchy: Dict[str, int]) -> int:
-        if not user or not hasattr(user, 'roles'):
-            return 0
-        permission_settings = guild_config.get("permission_settings", {})
-        max_level = 0
-        user_role_ids = {str(r.id) for r in user.roles}
-        for role_key, level in hierarchy.items():
-            for conf_id in permission_settings.get(role_key, []):
-                if str(conf_id) in user_role_ids and level > max_level:
-                    max_level = level
-        return max_level
-
-    async def _log_transaction(self, guild: discord.Guild, transaction_type: TransactionType,
-                             player: Optional[discord.Member], team_name: str, 
-                             action_by: Optional[discord.Member] = None, details: str = None,
-                             roster_info: Optional[TeamStats] = None) -> None:
-        guild_config = get_server_config(guild.id)
-        if not guild_config:
-            return
-
-        log_channels = guild_config.get("log_channels", {})
-        log_channel_id = log_channels.get("transactions", log_channels.get("general"))
-        if not log_channel_id:
-            logger.info(f"Guild {guild.id}: No transaction log channel configured")
-            return
-
-        try:
-            log_channel = guild.get_channel(int(log_channel_id))
-            if not log_channel or not isinstance(log_channel, discord.TextChannel):
-                logger.warning(f"Guild {guild.id}: Invalid log channel {log_channel_id}")
-                return
-
-            embed = PremiumEmbedBuilder.create_transaction_embed(
-                transaction_type, player, team_name, guild, details, action_by, roster_info
-            )
-            team_data = guild_config.get("team_data", {}).get(team_name, {})
-            if team_data:
-                embed = PremiumEmbedBuilder.add_team_branding(embed, guild, team_data, team_name)
-            await log_channel.send(embed=embed)
-
-            if player:
-                await self._store_transaction_history(guild.id, transaction_type, player, 
-                                                    team_name, action_by, details)
-        except Exception as e:
-            logger.error(f"Failed to log transaction in guild {guild.id}: {e}", exc_info=True)
-
-    async def _store_transaction_history(self, guild_id: int, transaction_type: TransactionType,
-                                       player: discord.Member, team_name: str,
-                                       action_by: Optional[discord.Member] = None, details: str = None) -> None:
-        try:
-            history = load_json(TRANSACTIONS_FILE)
-            guild_key = str(guild_id)
-            if guild_key not in history:
-                history[guild_key] = []
-
-            transaction = {
-                "id": f"TXN-{datetime.now(pytz.utc).strftime('%Y%m%d%H%M%S%f')}",
-                "type": transaction_type.value,
-                "player_id": str(player.id),
-                "player_name": player.display_name,
-                "team_name": team_name,
-                "action_by_id": str(action_by.id) if action_by else None,
-                "action_by_name": action_by.display_name if action_by else None,
-                "details": details,
-                "timestamp": datetime.now(pytz.utc).timestamp(),
-                "guild_id": guild_key
-            }
-            history[guild_key].append(transaction)
-            if len(history[guild_key]) > 1000:
-                history[guild_key] = history[guild_key][-1000:]
-            save_json(TRANSACTIONS_FILE, history)
-        except Exception as e:
-            logger.error(f"Failed to store transaction history: {e}")
-
-    async def _update_team_salary(self, guild_id: int, team_name: str, 
-                                salary_change: float) -> bool:
-        try:
-            guild_data = load_json(GUILDS_FILE)
-            guild_key = str(guild_id)
-            if guild_key not in guild_data:
-                guild_data[guild_key] = {"team_data": {}}
-            if team_name not in guild_data[guild_key].get("team_data", {}):
-                guild_data[guild_key]["team_data"][team_name] = {}
-            team_data = guild_data[guild_key]["team_data"][team_name]
-            current_salary = team_data.get("current_salary", 0.0)
-            team_data["current_salary"] = max(0.0, current_salary + salary_change)
-            save_json(GUILDS_FILE, guild_data)
-            return True
-        except Exception as e:
-            logger.error(f"Failed to update team salary for {team_name} in guild {guild_id}: {e}")
-            return False
-
-    @tasks.loop(minutes=2)
-    async def check_expired_offers(self):
-        try:
-            offers = await self.load_offers()
-            current_time = datetime.now(pytz.utc).timestamp()
-            changes_made = False
-            for guild_id_str, guild_offers in list(offers.items()):
-                if not isinstance(guild_offers, dict): continue
-                guild = self.bot.get_guild(int(guild_id_str))
-                if not guild: continue
-                guild_config = get_server_config(guild.id)
-                if not guild_config: continue
-                for offer_id, offer_data in list(guild_offers.items()):
-                    if (offer_data.get("status") == OfferStatus.ACTIVE.value and 
-                        offer_data.get("expires_at", 0) < current_time):
-                        offer_salary = offer_data.get("salary")
-                        if offer_salary:
-                            await self._update_team_salary(guild.id, offer_data["team"], -offer_salary)
-                        offer_data["status"] = OfferStatus.EXPIRED.value
-                        offer_data["expired_at"] = current_time
-                        changes_made = True
-                        await self._handle_offer_expiration(guild, guild_config, offer_id, offer_data)
-            if changes_made:
-                await self.save_offers(offers)
-        except Exception as e:
-            logger.error(f"Error in check_expired_offers: {e}", exc_info=True)
-
-    async def _handle_offer_expiration(self, guild: discord.Guild, guild_config: dict,
-                                     offer_id: str, offer_data: dict) -> None:
-        try:
-            team_name = offer_data.get("team", "Unknown Team")
-            player_id = offer_data.get("player_id")
-            player = await self.bot.fetch_user(int(player_id)) if player_id else None
-            embed = PremiumEmbedBuilder.create_base_embed(
-                title="⏰ Contract Offer Expired",
-                description=f"The contract offer from **{team_name}** has expired.",
-                color=PremiumEmbedBuilder.COLORS['neutral']
-            )
-            team_data = guild_config.get("team_data", {}).get(team_name, {})
-            embed = PremiumEmbedBuilder.add_team_branding(embed, guild, team_data, team_name)
-            embed.add_field(name="📝 Original Details", value=f"```\n{offer_data.get('details', 'Standard terms')}\n```", inline=False)
+            "Signing\n{offer_data.get('details', 'Standard terms')}\n```", inline=False)
             embed.add_field(name="🆔 Offer ID", value=f"`{offer_id}`", inline=True)
 
             if offer_data.get("dm_message_id") and player:
@@ -932,7 +719,7 @@ class EnhancedSigningCommands(commands.Cog):
                 coach_role = player.get_role(int(r_id_str))
                 if coach_role:
                     roles_to_remove.add(coach_role)
-        
+
         roles_to_remove = {r for r in roles_to_remove if r is not None}
         if not roles_to_remove:
             return await interaction.followup.send(embed=PremiumEmbedBuilder.create_base_embed(
@@ -1114,7 +901,7 @@ class EnhancedSigningCommands(commands.Cog):
             color=PremiumEmbedBuilder.COLORS['gold']
         )
         dm_embed = PremiumEmbedBuilder.add_team_branding(dm_embed, interaction.guild, team_specific_data, offering_team_name)
-        dm_embed.add_field(name="📝 Details", value=f"```\n{details}\n```", inline=False)
+        dm_embed.add_field(name="📝 Details", value=f"```\n{details}\n", inline=False)
         dm_embed.add_field(name="⏰ Expires", value=f"This offer expires <t:{int(expires_at_timestamp)}:R>.", inline=False)
         dm_embed.set_footer(text=f"Offer ID: {new_offer_id}")
 
@@ -1404,18 +1191,4 @@ class EnhancedSigningCommands(commands.Cog):
                 embed.add_field(name="Player", value=player_mention, inline=True)
                 embed.add_field(name="Offered By", value=f"<@{offer_data.get('offered_by_id')}>", inline=True)
                 embed.add_field(name="Expires", value=f"<t:{int(offer_data.get('expires_at', 0))}:R>", inline=True)
-                embed.add_field(name="Details", value=f"```\n{offer_data.get('details', 'N/A')}\n```", inline=False)
-                embed.set_footer(text=f"Offer ID: {offer_id}")
-                active_embeds.append(embed)
-
-        if not active_embeds:
-            return await interaction.followup.send(embed=PremiumEmbedBuilder.create_base_embed(
-                "No Active Offers", "There are no active contract offers on this server.", 
-                PremiumEmbedBuilder.COLORS['info']
-            ), ephemeral=True)
-        
-        for i in range(0, len(active_embeds), 10):
-            await interaction.followup.send(embeds=active_embeds[i:i+10], ephemeral=True)
-
-async def setup(bot):
-    await bot.add_cog(EnhancedSigningCommands(bot))
+                embed.add_field(name="Details", value=f"```\n{offer_data.get('details', 'N/A')}\n

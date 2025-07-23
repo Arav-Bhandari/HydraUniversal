@@ -128,7 +128,7 @@ class PremiumOfferView(discord.ui.View):
         self.player_id = player.id
         self.guild = player.guild
         self.guild_config = guild_config
-        
+
         # Add placeholder buttons if the actual ones from EnhancedSigningCommands aren't accessible.
         # The actual view handles accept/decline/view logic.
         self.add_item(discord.ui.Button(label="Accept Offer", style=discord.ButtonStyle.success, emoji="✅", custom_id=f"contract_accept_{offer_id[:8]}", disabled=True))
@@ -165,7 +165,7 @@ class OfferButton(discord.ui.Button):
         if not fa_manager_cog:
             await interaction.response.send_message(embed=EmbedBuilder.error("Cog Missing", "FreeAgencyManagerCog not loaded. Cannot process offer."), ephemeral=True)
             return
-        
+
         # Call the method that handles checks and displays the modal.
         await fa_manager_cog._initiate_offer_from_lft(interaction)
 
@@ -198,7 +198,7 @@ class InitiateOfferModal(discord.ui.Modal):
         # Get context from the interaction that *opened* this modal.
         offering_manager_interaction = self.lft_interaction
         offering_manager = offering_manager_interaction.user
-        
+
         # Delegate the core offer creation logic to the FreeAgencyManagerCog itself.
         fa_manager_cog = self.bot.get_cog("FreeAgencyManagerCog")
         if not fa_manager_cog:
@@ -322,7 +322,7 @@ class PlayerApplyModal(discord.ui.Modal):
         player_role = self.player_role_input.value
         player_experience = self.player_experience_input.value or "N/A"
         player_availability = self.player_availability_input.value or "N/A"
-        
+
         app_details = f"Seeking Role: {player_role}\nExperience/Skills: {player_experience}\nAvailability: {player_availability}"
 
         # --- Core Application Logic ---
@@ -403,7 +403,7 @@ class FreeAgencyManagerCog(commands.Cog):
         signing_cog = self._get_signing_cog()
         if not signing_cog: return False
         return await signing_cog._update_team_salary(guild_id, team_name, salary_change)
-    
+
     def _is_player_suspended(self, guild_id: int, player_id: int) -> Tuple[bool, str]:
         """Helper to check player's suspension status."""
         # Assumes suspension data is managed by EnhancedSigningCommands or accessible via utils.
@@ -414,7 +414,7 @@ class FreeAgencyManagerCog(commands.Cog):
             if susp_data.get("player_id") == str(player_id) and susp_data.get("status") == "active":
                 return True, susp_data.get("reason", "No reason provided.")
         return False, "No reason provided."
-    
+
     def _get_user_max_role_level(self, user: discord.Member, guild_config: dict, hierarchy: Dict[str, int]) -> int:
         """Delegate role level check to EnhancedSigningCommands."""
         signing_cog = self._get_signing_cog()
@@ -443,11 +443,11 @@ class FreeAgencyManagerCog(commands.Cog):
             if not fa_member:
                 await interaction.followup.send(embed=EmbedBuilder.error("Member Not Found", "Free agent is not a member of this server."), ephemeral=True)
                 return False
-            
+
             # Create a mock interaction for the signing cog's offer command
             # We'll use the offer command directly but bypass the decorator checks
             guild_config = get_server_config(interaction.guild.id)
-            
+
             # Call the signing cog's internal offer creation logic
             await signing_cog.offer.callback(
                 signing_cog,
@@ -462,7 +462,7 @@ class FreeAgencyManagerCog(commands.Cog):
             logger.error(f"Error sending offer from LFT: {e}", exc_info=True)
             await interaction.followup.send(embed=EmbedBuilder.error("Offer Failed", "An error occurred while sending the offer."), ephemeral=True)
             return False
-    
+
     # --- Method to process player applications (for /lfp) ---
     async def _process_player_application(self, interaction: discord.Interaction, 
                                         team_name: str, team_manager_ids: List[int],
@@ -486,7 +486,7 @@ class FreeAgencyManagerCog(commands.Cog):
         app_embed.add_field(name="Application Details", value=f"```\n{application_details}\n```", inline=False)
         app_embed.add_field(name="Player Mention", value=f"{applying_player.mention}", inline=True)
         app_embed.add_field(name="Player ID", value=f"`{applying_player.id}`", inline=True)
-        
+
         success_count = 0
         failed_notifications = []
         guild = interaction.guild
@@ -527,7 +527,7 @@ class FreeAgencyManagerCog(commands.Cog):
         if failed_notifications:
             log_details += f" Failed notifications for: {', '.join(failed_notifications)}."
             logger.warning(f"Failed to notify {len(failed_notifications)} manager(s) for application from {applying_player.id} to team {team_name}.")
-        
+
         await _log_transaction(
             self.bot, guild, TransactionType.OFFER, # Using OFFER type for recruitment/application logs
             applying_player, team_name,
@@ -553,7 +553,7 @@ class FreeAgencyManagerCog(commands.Cog):
             return await interaction.followup.send(embed=EmbedBuilder.error("Configuration Error", "Server configuration not found. Please ensure bot setup is complete."), ephemeral=True)
 
         fa_user = interaction.user
-        
+
         # --- Pre-checks ---
         current_team = await detect_team(fa_user) # Assumes detect_team is available
         if current_team:
@@ -563,7 +563,7 @@ class FreeAgencyManagerCog(commands.Cog):
         permission_settings = guild_config.get("permission_settings", {})
         free_agent_role_ids = permission_settings.get("free_agent_roles", [])
         has_free_agent_role = any(role.id in free_agent_role_ids for role in fa_user.roles)
-        
+
         if not has_free_agent_role:
             return await interaction.followup.send(embed=EmbedBuilder.error("Not a Free Agent", "You must have the free agent role to use this command. Contact staff if you believe this is an error."), ephemeral=True)
 
@@ -574,14 +574,14 @@ class FreeAgencyManagerCog(commands.Cog):
                 color=EmbedBuilder.COLORS['error']
             )
             error_embed.add_field(name="Reason", value=suspension_reason, inline=False)
-            return await interaction.followup.send(embed=error_embed, ephemeral=True)
+            return await interaction.followup.send(error_embed, ephemeral=True)
 
         # Get free agency channel
         announcement_channels = guild_config.get("announcement_channels", {})
         free_agency_channel_id = announcement_channels.get("free_agency")
         if not free_agency_channel_id:
             return await interaction.followup.send(embed=EmbedBuilder.error("Channel Not Configured", "Free agency channel is not configured. Please contact an administrator."), ephemeral=True)
-        
+
         free_agency_channel = interaction.guild.get_channel(free_agency_channel_id)
         if not free_agency_channel:
             return await interaction.followup.send(embed=EmbedBuilder.error("Channel Not Found", "Free agency channel could not be found. Please contact an administrator."), ephemeral=True)
@@ -601,7 +601,7 @@ class FreeAgencyManagerCog(commands.Cog):
 
         # --- Create the View with the Offer Button ---
         view = FreeAgentView(fa_user, details, looking_for, guild_config, self.bot, interaction.guild)
-        
+
         # Post to free agency channel
         try:
             await free_agency_channel.send(embed=fa_embed, view=view)
@@ -616,7 +616,7 @@ class FreeAgencyManagerCog(commands.Cog):
             details=f"Looking for: '{looking_for}'. Details: '{details}'. Post made by {fa_user.display_name}.",
             roster_info=None
         )
-    
+
     # --- `/lfp` Command ---
     @app_commands.command(name="lfp", description="Announce your team is looking for players")
     @app_commands.describe(
@@ -637,9 +637,9 @@ class FreeAgencyManagerCog(commands.Cog):
                          permission_settings.get("hc_roles", []) + 
                          permission_settings.get("ac_roles", []) +
                          permission_settings.get("manage_teams_roles", []))
-        
+
         has_coach_role = any(role.id in coach_role_ids for role in interaction.user.roles)
-        
+
         if not has_coach_role and not interaction.user.guild_permissions.administrator:
             return await interaction.followup.send(embed=EmbedBuilder.error("Permission Denied", "You must have a coaching role to use this command."), ephemeral=True)
 
@@ -653,7 +653,7 @@ class FreeAgencyManagerCog(commands.Cog):
         free_agency_channel_id = announcement_channels.get("free_agency")
         if not free_agency_channel_id:
             return await interaction.followup.send(embed=EmbedBuilder.error("Channel Not Configured", "Free agency channel is not configured. Please contact an administrator."), ephemeral=True)
-        
+
         free_agency_channel = interaction.guild.get_channel(free_agency_channel_id)
         if not free_agency_channel:
             return await interaction.followup.send(embed=EmbedBuilder.error("Channel Not Found", "Free agency channel could not be found. Please contact an administrator."), ephemeral=True)
@@ -665,7 +665,7 @@ class FreeAgencyManagerCog(commands.Cog):
                                              guild_config.get("permission_settings", {}).get("fo_roles", []) + \
                                              guild_config.get("permission_settings", {}).get("hc_roles", []) + \
                                              guild_config.get("permission_settings", {}).get("manage_teams_roles", [])
-        
+
         all_manager_role_ids = list(set(manager_role_ids_from_team_data + manager_role_ids_from_permissions))
 
         # Find actual manager user IDs from these role IDs
@@ -684,7 +684,7 @@ class FreeAgencyManagerCog(commands.Cog):
             # It's okay if no managers are found; the post can still be made.
 
         # --- Create the LFP Embed ---
-        lfp_embed = EmbedBuilder.info(
+        lfp_embed = EmbedBuilder.base_embed(
             title=f"📣 {team_name} is Looking For Players!",
             description=f"**{team_name}** is actively recruiting new talent!",
             color=EmbedBuilder.COLORS['gold']
@@ -696,7 +696,7 @@ class FreeAgencyManagerCog(commands.Cog):
         lfp_embed.add_field(name="Player Needs", value=player_needs, inline=False)
         if details and details != "Join our competitive league!":
             lfp_embed.add_field(name="Team Details/Requirements", value=details, inline=False)
-        
+
         # Add manager contact info if available
         if team_manager_user_ids:
             manager_mentions = ", ".join([f"<@{uid}>" for uid in team_manager_user_ids[:5]]) # Limit mentions
@@ -716,7 +716,7 @@ class FreeAgencyManagerCog(commands.Cog):
             bot=self.bot,
             lfp_guild=interaction.guild # Pass guild context
         )
-        
+
         # Post to free agency channel
         try:
             await free_agency_channel.send(embed=lfp_embed, view=view)
@@ -732,7 +732,7 @@ class FreeAgencyManagerCog(commands.Cog):
             details=f"Team '{team_name}' posted LFP: Needs='{player_needs}', Details='{details}'. Managers notified: {len(team_manager_user_ids)}.",
             roster_info=None
         )
-    
+
     async def _initiate_offer_from_lft(self, interaction: discord.Interaction):
         """Handle the offer button click from LFT posts"""
         # Get the free agent from the view context
@@ -740,20 +740,20 @@ class FreeAgencyManagerCog(commands.Cog):
         if not fa_user:
             await interaction.response.send_message(embed=EmbedBuilder.error("Error", "Could not find the free agent user from this post."), ephemeral=True)
             return
-        
+
         guild_config = get_server_config(interaction.guild.id)
-        
+
         # Check if the user making the offer can manage team signings
         if not await self._can_manage_team_signings(interaction, guild_config):
             await interaction.response.send_message(embed=EmbedBuilder.error("Permission Denied", "You don't have permission to make offers."), ephemeral=True)
             return
-        
+
         # Check if user is on a team
         offering_team = await detect_team(interaction.user)
         if not offering_team:
             await interaction.response.send_message(embed=EmbedBuilder.error("Team Error", "You are not associated with a team."), ephemeral=True)
             return
-        
+
         # Open the offer modal
         modal = InitiateOfferModal(fa_user, guild_config, self.bot, interaction)
         await interaction.response.send_modal(modal)
@@ -770,7 +770,7 @@ class FreeAgencyManagerCog(commands.Cog):
                     return view.fa_user # Access the FA user stored in the view
         logging.error("Could not retrieve FreeAgentView or FA User from interaction context.")
         return None # Cannot retrieve FA user
-    
+
     # --- Helper for ApplyButton to get suspension status ---
     # It's better if this method is also delegated to EnhancedSigningCommands if it manages suspensions,
     # otherwise, it can live here if FreeAgencyManagerCog manages suspension data directly.
@@ -798,6 +798,6 @@ async def setup(bot):
         # Consider raising an error or preventing cog load if this dependency is essential.
     else:
         logger.info("EnhancedSigningCommands cog found. Proceeding to load FreeAgencyManagerCog.")
-    
+
     await bot.add_cog(FreeAgencyManagerCog(bot))
     logger.info("FreeAgencyManagerCog loaded successfully.")

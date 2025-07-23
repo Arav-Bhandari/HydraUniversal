@@ -20,7 +20,7 @@ class folist(commands.Cog):
         config = get_server_config(guild.id)
 
         # Get the owners channel from config
-        owners_channel_id = config.get("channels", {}).get("owners")
+        owners_channel_id = config.get("log_channels", {}).get("owners")
         if not owners_channel_id:
             await interaction.response.send_message(
                 embed=discord.Embed(
@@ -45,34 +45,43 @@ class folist(commands.Cog):
             return
 
         try:
-            # Get FO role ID from config
-            fo_role_id = config.get("permission_settings", {}).get("franchise_owner_role")
-            if not fo_role_id:
-                raise ValueError("Franchise Owner role not configured in server settings")
+            # Get FO role IDs from config (note: it's fo_roles, not franchise_owner_role)
+            fo_role_ids = config.get("permission_settings", {}).get("fo_roles", [])
+            if not fo_role_ids:
+                raise ValueError("Franchise Owner roles not configured in server settings")
 
-            fo_role = guild.get_role(int(fo_role_id))
-            if not fo_role:
-                raise ValueError("Franchise Owner role not found in server")
-
-            # Get roster cap from config (assuming team_data structure)
+            # Get roster cap from config
             team_data = config.get("team_data", {})
-            default_roster_cap = 20  # Default if not set
+            default_roster_cap = config.get("roster_cap", 53)
 
             # Find all franchise owners and their team roles
             franchise_owners = []
-            team_roles = config.get("team_roles", {})
-            for member in guild.members:
-                if fo_role in member.roles:
-                    team_role = next((role for role in member.roles if str(role.id) in team_roles.values()), None)
-                    if team_role:
-                        team_name = next((name for name, role_id in team_roles.items() if str(role_id) == str(team_role.id)), "Unknown Team")
-                        team_emoji = team_data.get(team_name, {}).get("emoji", "🏆")
-                        roster_cap = team_data.get(team_name, {}).get("roster_cap", default_roster_cap)
-                        roster_count = len([m for m in guild.members if team_role in m.roles])
-                        roster_status = f"{roster_count}/{roster_cap}"
-                        if roster_count > roster_cap:
-                            roster_status += " **(Over Cap!)**"
-                        franchise_owners.append((team_emoji, team_role.name, member.mention, roster_status))
+            for team_name, team_info in team_data.items():
+                team_role_id = team_info.get("role_id")
+                if not team_role_id:
+                    continue
+                    
+                team_role = guild.get_role(team_role_id)
+                if not team_role:
+                    continue
+                
+                # Find franchise owners for this team
+                team_owners = []
+                for member in guild.members:
+                    if (team_role in member.roles and 
+                        any(guild.get_role(fo_role_id) in member.roles for fo_role_id in fo_role_ids if guild.get_role(fo_role_id))):
+                        team_owners.append(member)
+                
+                if team_owners:
+                    team_emoji = team_info.get("emoji", "🏆")
+                    roster_cap = team_info.get("roster_cap", default_roster_cap)
+                    roster_count = len([m for m in guild.members if team_role in m.roles])
+                    roster_status = f"{roster_count}/{roster_cap}"
+                    if roster_count > roster_cap:
+                        roster_status += " **(Over Cap!)**"
+                    
+                    owners_text = ", ".join([owner.mention for owner in team_owners])
+                    franchise_owners.append((team_emoji, team_role.name, owners_text, roster_status))
 
             if not franchise_owners:
                 embed = discord.Embed(
