@@ -1,14 +1,40 @@
+
 import discord
 from discord import app_commands
 from discord.ext import commands
 import logging
 import datetime
 import re
+import json
+import os
 from typing import Optional, Union
 from utils.config import get_server_config
+from utils.permissions import is_admin
 
 # Configure logging
 logger = logging.getLogger("bot.moderation")
+
+# --------------------------------------------------------------------------------
+# Utility Functions
+# --------------------------------------------------------------------------------
+def load_json(filename: str) -> dict:
+    """Load JSON data from file."""
+    try:
+        if os.path.exists(filename):
+            with open(filename, 'r') as f:
+                return json.load(f)
+        return {}
+    except (json.JSONDecodeError, FileNotFoundError) as e:
+        logger.error(f"Error loading {filename}: {e}")
+        return {}
+
+def save_json(filename: str, data: dict) -> None:
+    """Save JSON data to file."""
+    try:
+        with open(filename, 'w') as f:
+            json.dump(data, f, indent=2)
+    except Exception as e:
+        logger.error(f"Error saving {filename}: {e}")
 
 # --------------------------------------------------------------------------------
 # EmbedBuilder Utility
@@ -170,10 +196,27 @@ class ModerationCommands(commands.Cog, name="Moderation Commands"):
 
     async def has_moderator_role(self, user: discord.Member) -> bool:
         """Check if the user has a moderator role based on server config."""
+        # Check if user is admin first
+        if await is_admin(user):
+            return True
+            
         config = get_server_config(user.guild.id)
-        moderator_role_id = config.get("permission_settings", {}).get("moderator_role")
+        permission_settings = config.get("permission_settings", {})
+        
+        # Check for moderator_roles (list format from setup commands)
+        moderator_role_ids = permission_settings.get("moderator_roles", [])
+        if moderator_role_ids:
+            user_role_ids = [role.id for role in user.roles]
+            for role_id in moderator_role_ids:
+                if int(role_id) in user_role_ids:
+                    return True
+        
+        # Fallback to legacy single moderator_role
+        moderator_role_id = permission_settings.get("moderator_role")
         if moderator_role_id:
-            return discord.utils.get(user.roles, id=int(moderator_role_id)) is not None
+            if discord.utils.get(user.roles, id=int(moderator_role_id)):
+                return True
+        
         # Fallback to role name check if role ID not set
         return any("mod" in role.name.lower() or "moderator" in role.name.lower() for role in user.roles)
 
@@ -208,7 +251,8 @@ class ModerationCommands(commands.Cog, name="Moderation Commands"):
     )
     async def warn(self, interaction: discord.Interaction, member: discord.Member, reason: str) -> None:
         """Issues a warning, logs it, and notifies the member."""
-        await interaction.response.defer(ephemeral=True)  # Defer to handle potential delays
+        await interaction.response.defer(ephemeral=True)
+        
         if not await self.has_moderator_role(interaction.user):
             await interaction.followup.send(embed=EmbedBuilder.error(
                 "Permission Denied",
@@ -242,7 +286,7 @@ class ModerationCommands(commands.Cog, name="Moderation Commands"):
             return
 
         try:
-            all_warnings = load_json("warnings.json")
+            all_warnings = load_json("data/warnings.json")
         except Exception as e:
             logger.error(f"Error loading warnings.json: {e}")
             await interaction.followup.send(embed=EmbedBuilder.error(
@@ -266,7 +310,7 @@ class ModerationCommands(commands.Cog, name="Moderation Commands"):
         user_warnings.append(warning_entry)
 
         try:
-            save_json("warnings.json", all_warnings)
+            save_json("data/warnings.json", all_warnings)
         except Exception as e:
             logger.error(f"Error saving warnings.json: {e}")
             await interaction.followup.send(embed=EmbedBuilder.error(
@@ -316,6 +360,57 @@ class ModerationCommands(commands.Cog, name="Moderation Commands"):
                 f"Failed to send warning DM to {member.mention}: {e}"
             ))
 
+    @app_commands.command(name="baninfo", description="Get ban information for a user ID or member.")
+    @app_commands.describe(user="The user ID or member to check ban info for.")
+    async def baninfo(self, interaction: discord.Interaction, user: str) -> None:
+        """Check if a user is banned and show ban details. Open to everyone."""
+        await interaction.response.defer()
+        
+        try:
+            # Try to parse as user ID first
+            if user.isdigit():
+                user_id = int(user)
+            else:
+                # Try to parse as mention
+                user_id = int(user.replace('<@', '').replace('>', '').replace('!', ''))
+        except ValueError:
+            await interaction.followup.send(embed=EmbedBuilder.error(
+                "Invalid Input",
+                "Please provide a valid user ID or mention."
+            ))
+            return
+
+        try:
+            ban_entry = await interaction.guild.fetch_ban(discord.Object(id=user_id))
+            user_obj = ban_entry.user
+            reason = ban_entry.reason or "No reason provided"
+            
+            embed = EmbedBuilder.info(
+                "Ban Information",
+                f"**{user_obj.display_name}** (`{user_obj.id}`) is banned from this server."
+            )
+            embed.add_field(name="Reason", value=reason, inline=False)
+            embed.set_thumbnail(url=user_obj.display_avatar.url)
+            
+        except discord.NotFound:
+            embed = EmbedBuilder.info(
+                "Ban Information", 
+                f"User ID `{user_id}` is not banned from this server."
+            )
+        except discord.Forbidden:
+            embed = EmbedBuilder.error(
+                "Permission Error",
+                "I don't have permission to view ban information."
+            )
+        except Exception as e:
+            logger.error(f"Error checking ban info: {e}")
+            embed = EmbedBuilder.error(
+                "Error",
+                f"An error occurred while checking ban information: {e}"
+            )
+        
+        await interaction.followup.send(embed=embed)
+
     @app_commands.command(name="memberinfo", description="Get detailed info and moderation history for a member.")
     @app_commands.describe(member="The member to check. Defaults to yourself.")
     async def memberinfo(
@@ -325,7 +420,7 @@ class ModerationCommands(commands.Cog, name="Moderation Commands"):
         *,
         channel: Optional[discord.TextChannel] = None
     ) -> None:
-        """Handles both slash command usage and programmatic calls from other cogs."""
+        """Get member information. Open to everyone."""
         target_member = member or interaction.user
         is_programmatic_call = channel is not None
 
@@ -349,13 +444,13 @@ class ModerationCommands(commands.Cog, name="Moderation Commands"):
                 embed.add_field(name=f"Roles [{len(roles)}]", value=role_text, inline=False)
 
         try:
-            all_warnings = load_json("warnings.json")
+            all_warnings = load_json("data/warnings.json")
         except Exception as e:
             logger.error(f"Error loading warnings.json: {e}")
             all_warnings = {}
 
         try:
-            all_mutes = load_json("mutes.json")
+            all_mutes = load_json("data/mutes.json")
         except Exception as e:
             logger.error(f"Error loading mutes.json: {e}")
             all_mutes = {}
@@ -399,7 +494,8 @@ class ModerationCommands(commands.Cog, name="Moderation Commands"):
     @app_commands.describe(member="The member to kick.", reason="The reason for kicking.")
     async def kick(self, interaction: discord.Interaction, member: discord.Member, reason: str) -> None:
         """Kicks a member after confirmation via a button view."""
-        await interaction.response.defer(ephemeral=True)  # Defer to handle potential delays
+        await interaction.response.defer(ephemeral=True)
+        
         if not await self.has_moderator_role(interaction.user):
             await interaction.followup.send(embed=EmbedBuilder.error(
                 "Permission Denied",
@@ -430,7 +526,8 @@ class ModerationCommands(commands.Cog, name="Moderation Commands"):
     )
     async def mute(self, interaction: discord.Interaction, member: discord.Member, duration: str, reason: str) -> None:
         """Times out a member for a specified duration and logs the action."""
-        await interaction.response.defer(ephemeral=True)  # Defer to handle potential delays
+        await interaction.response.defer(ephemeral=True)
+        
         if not await self.has_moderator_role(interaction.user):
             await interaction.followup.send(embed=EmbedBuilder.error(
                 "Permission Denied",
@@ -461,7 +558,8 @@ class ModerationCommands(commands.Cog, name="Moderation Commands"):
             await member.timeout(end_time, reason=f"Muted by {interaction.user.display_name}: {reason}")
 
             try:
-                mutes = load_json("mutes.json")
+                os.makedirs("data", exist_ok=True)
+                mutes = load_json("data/mutes.json")
             except Exception as e:
                 logger.error(f"Error loading mutes.json: {e}")
                 await interaction.followup.send(embed=EmbedBuilder.error(
@@ -482,7 +580,7 @@ class ModerationCommands(commands.Cog, name="Moderation Commands"):
             })
 
             try:
-                save_json("mutes.json", mutes)
+                save_json("data/mutes.json", mutes)
             except Exception as e:
                 logger.error(f"Error saving mutes.json: {e}")
                 await interaction.followup.send(embed=EmbedBuilder.error(
