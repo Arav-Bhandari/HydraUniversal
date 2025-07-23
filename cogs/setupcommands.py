@@ -203,8 +203,21 @@ class SetupCommands(commands.Cog):
                         channel_id_val = guild_config_live.get("log_channels", {}).get(actual_config_key)
 
                     if channel_id_val:
-                        channel_obj = interaction.guild.get_channel(channel_id_val)
-                        if channel_obj: current_display_value = channel_obj.mention
+                        # Special handling for games_channel which can have multiple channels
+                        if field_key_page == "games_channel" and isinstance(channel_id_val, list):
+                            channel_mentions = []
+                            for ch_id in channel_id_val:
+                                channel_obj = interaction.guild.get_channel(ch_id)
+                                if channel_obj:
+                                    channel_mentions.append(channel_obj.mention)
+                            if channel_mentions:
+                                current_display_value = "\n".join([f"• {mention}" for mention in channel_mentions])
+                        else:
+                            # Single channel (handle both int and list with single item)
+                            single_id = channel_id_val if isinstance(channel_id_val, int) else (channel_id_val[0] if channel_id_val else None)
+                            if single_id:
+                                channel_obj = interaction.guild.get_channel(single_id)
+                                if channel_obj: current_display_value = channel_obj.mention
 
             elif field_item["type"] == "text": # For fields like global roster cap
                 if field_key_page == "global_roster_cap":
@@ -1424,10 +1437,18 @@ class SetupPageView(View): # Use imported View
                 self.add_item(select)
 
             elif field_item["type"] == "channel":
+                # Special handling for Games Log to allow multiple channels including threads
+                if field_item["key"] == "games_channel":
+                    max_values = 5  # Allow up to 5 channels for games log
+                    channel_types = [discord.ChannelType.text, discord.ChannelType.public_thread, discord.ChannelType.private_thread]
+                else:
+                    max_values = 1
+                    channel_types = [discord.ChannelType.text]
+                    
                 select = ChannelSelect( # Use imported ChannelSelect
                     placeholder=f"Select {field_item['name']}",
-                    min_values=0, max_values=1,
-                    channel_types=[discord.ChannelType.text],  # Only text channels
+                    min_values=0, max_values=max_values,
+                    channel_types=channel_types,
                     custom_id=select_custom_id,
                     row=i
                 )
@@ -1543,7 +1564,7 @@ class SetupPageView(View): # Use imported View
 
         elif item_type == "channel":
             actual_config_key_mapped = self.session["key_mapping"].get(field_ui_key)
-            selected_channel_obj = select_obj.values[0] if select_obj.values else None
+            selected_channels = select_obj.values if select_obj.values else []
 
             if actual_config_key_mapped:
                 target_dict_for_channel = None
@@ -1554,9 +1575,17 @@ class SetupPageView(View): # Use imported View
                 else: # Assume it's a log channel key
                     target_dict_for_channel = live_config.setdefault("log_channels", {})
 
-                if selected_channel_obj:
-                    target_dict_for_channel[actual_config_key_mapped] = selected_channel_obj.id
-                    log_entry_detail = f"Set **{display_name_for_log}** to {selected_channel_obj.mention}"
+                if selected_channels:
+                    # Special handling for games_channel to support multiple channels
+                    if field_ui_key == "games_channel":
+                        # Store as list of channel IDs for games log
+                        target_dict_for_channel[actual_config_key_mapped] = [ch.id for ch in selected_channels]
+                        channel_mentions = [ch.mention for ch in selected_channels]
+                        log_entry_detail = f"Set **{display_name_for_log}** to {', '.join(channel_mentions)}"
+                    else:
+                        # Single channel for other types
+                        target_dict_for_channel[actual_config_key_mapped] = selected_channels[0].id
+                        log_entry_detail = f"Set **{display_name_for_log}** to {selected_channels[0].mention}"
                 else:
                     # Remove the key if no channel is selected (cleared)
                     target_dict_for_channel.pop(actual_config_key_mapped, None)
