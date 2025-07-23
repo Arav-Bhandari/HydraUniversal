@@ -536,7 +536,10 @@ class Stats(commands.Cog):
             game_type = "7v7"
 
         guild = discord.Object(id=guild_id)
-        self.bot.tree.clear_commands(guild=guild)
+        try:
+            self.bot.tree.clear_commands(guild=guild)
+        except Exception as e:
+            logger.warning(f"Could not clear commands for guild {guild_id}: {e}")
 
         game_config = self.game_types.get(game_type, self.game_types["7v7"])
 
@@ -544,22 +547,14 @@ class Stats(commands.Cog):
         self.bot.tree.add_command(self.statview, guild=guild)
         self.bot.tree.add_command(self.statleaderboard, guild=guild)
 
-        # Register add_stat commands for each category
-        for category in game_config["categories"]:
-            command_name = f"add_{category.lower()}_stats"
-            params = game_config["add_stat_params"].get(category, [])
-            if params:
-                command = app_commands.command(
-                    name=command_name,
-                    description=f"Record or update {game_config['display_names'].get(category, category)} statistics."
-                )(self._create_add_stat_command(category))
-                self.bot.tree.add_command(command, guild=guild)
-
         # Register admin commands
         self.bot.tree.add_command(self.statmerge, guild=guild)
         self.bot.tree.add_command(self.statclear, guild=guild)
         self.bot.tree.add_command(self.statexport, guild=guild)
         self.bot.tree.add_command(self.stat_config, guild=guild)
+
+        # Add static position-specific commands
+        self._register_position_commands(guild, game_type)
 
         try:
             await self.bot.tree.sync(guild=guild)
@@ -567,19 +562,33 @@ class Stats(commands.Cog):
         except Exception as e:
             logger.error(f"Failed to sync commands for guild {guild_id}: {e}")
 
-
-    def _create_add_stat_command(self, category: str):
-        """Create dynamic add_stat command."""
-        async def add_stat(interaction: discord.Interaction, **kwargs) -> None:
-            config = get_server_config(interaction.guild_id)
-            game_type = config.get("game_type", "7v7")
-            await self._update_stats_command_handler(
-                interaction, category, kwargs["player"],
-                {k: v for k, v in kwargs.items() if k != "player"},
-                self.game_types[game_type]["derived_stats"].get(category, []),
-                f"{category} Stats Updated"
-            )
-        return add_stat
+    def _register_position_commands(self, guild, game_type):
+        """Register position-specific stat commands."""
+        game_config = self.game_types.get(game_type, self.game_types["7v7"])
+        
+        for category in game_config["categories"]:
+            if category == "QB":
+                self.bot.tree.add_command(self.add_qb_stats, guild=guild)
+            elif category == "WR":
+                self.bot.tree.add_command(self.add_wr_stats, guild=guild)
+            elif category == "CB":
+                self.bot.tree.add_command(self.add_cb_stats, guild=guild)
+            elif category == "DE":
+                self.bot.tree.add_command(self.add_de_stats, guild=guild)
+            elif category == "RB":
+                self.bot.tree.add_command(self.add_rb_stats, guild=guild)
+            elif category == "LB":
+                self.bot.tree.add_command(self.add_lb_stats, guild=guild)
+            elif category == "P":
+                self.bot.tree.add_command(self.add_p_stats, guild=guild)
+            elif category == "B":
+                self.bot.tree.add_command(self.add_b_stats, guild=guild)
+            elif category == "ST":
+                self.bot.tree.add_command(self.add_st_stats, guild=guild)
+            elif category == "MF":
+                self.bot.tree.add_command(self.add_mf_stats, guild=guild)
+            elif category == "GK":
+                self.bot.tree.add_command(self.add_gk_stats, guild=guild)
 
     @app_commands.command(name="stat_config", description="Configure the game type for this server (Admin only).")
     @app_commands.describe(game_type="The type of game for this server.")
@@ -1149,6 +1158,182 @@ class Stats(commands.Cog):
                 inline=False
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
+
+    # Position-specific stat commands
+    @app_commands.command(name="add_qb_stats", description="Record or update Quarterback statistics.")
+    @app_commands.describe(
+        player="Player name",
+        comp="Completions",
+        att="Attempts", 
+        yards="Passing yards",
+        tds="Touchdowns",
+        ints="Interceptions",
+        sacks="Sacks taken"
+    )
+    async def add_qb_stats(self, interaction: discord.Interaction, player: str, comp: int = 0, att: int = 0, yards: int = 0, tds: int = 0, ints: int = 0, sacks: int = 0):
+        """Add QB stats."""
+        stats_to_add = {"comp": comp, "att": att, "yards": yards, "tds": tds, "ints": ints, "sacks": sacks}
+        await self._update_stats_command_handler(
+            interaction, "QB", player, stats_to_add,
+            ["qbr", "comp_pct", "int_pct"], "QB Stats Updated"
+        )
+
+    @app_commands.command(name="add_wr_stats", description="Record or update Wide Receiver statistics.")
+    @app_commands.describe(
+        player="Player name",
+        catches="Receptions",
+        targets="Targets",
+        tds="Touchdowns",
+        yac="Yards after catch",
+        yards="Receiving yards"
+    )
+    async def add_wr_stats(self, interaction: discord.Interaction, player: str, catches: int = 0, targets: int = 0, tds: int = 0, yac: int = 0, yards: int = 0):
+        """Add WR stats."""
+        stats_to_add = {"catches": catches, "targets": targets, "tds": tds, "yac": yac, "yards": yards}
+        await self._update_stats_command_handler(
+            interaction, "WR", player, stats_to_add,
+            ["catch_pct", "ypc"], "WR Stats Updated"
+        )
+
+    @app_commands.command(name="add_cb_stats", description="Record or update Cornerback statistics.")
+    @app_commands.describe(
+        player="Player name",
+        ints="Interceptions",
+        targets="Targets",
+        swats="Pass breakups",
+        tds="Touchdowns",
+        comp_allowed="Completions allowed"
+    )
+    async def add_cb_stats(self, interaction: discord.Interaction, player: str, ints: int = 0, targets: int = 0, swats: int = 0, tds: int = 0, comp_allowed: int = 0):
+        """Add CB stats."""
+        stats_to_add = {"ints": ints, "targets": targets, "swats": swats, "tds": tds, "comp_allowed": comp_allowed}
+        await self._update_stats_command_handler(
+            interaction, "CB", player, stats_to_add,
+            ["deny_pct", "comp_pct"], "CB Stats Updated"
+        )
+
+    @app_commands.command(name="add_de_stats", description="Record or update Defensive End statistics.")
+    @app_commands.describe(
+        player="Player name",
+        tackles="Tackles",
+        misses="Missed tackles",
+        sacks="Sacks",
+        safeties="Safeties"
+    )
+    async def add_de_stats(self, interaction: discord.Interaction, player: str, tackles: int = 0, misses: int = 0, sacks: int = 0, safeties: int = 0):
+        """Add DE stats."""
+        stats_to_add = {"tackles": tackles, "misses": misses, "sacks": sacks, "safeties": safeties}
+        await self._update_stats_command_handler(
+            interaction, "DE", player, stats_to_add, [], "DE Stats Updated"
+        )
+
+    @app_commands.command(name="add_rb_stats", description="Record or update Running Back statistics.")
+    @app_commands.describe(
+        player="Player name",
+        rushes="Rush attempts",
+        yards="Rushing yards",
+        tds="Touchdowns",
+        fumbles="Fumbles"
+    )
+    async def add_rb_stats(self, interaction: discord.Interaction, player: str, rushes: int = 0, yards: int = 0, tds: int = 0, fumbles: int = 0):
+        """Add RB stats."""
+        stats_to_add = {"rushes": rushes, "yards": yards, "tds": tds, "fumbles": fumbles}
+        await self._update_stats_command_handler(
+            interaction, "RB", player, stats_to_add, ["ypr"], "RB Stats Updated"
+        )
+
+    @app_commands.command(name="add_lb_stats", description="Record or update Linebacker statistics.")
+    @app_commands.describe(
+        player="Player name",
+        tackles="Tackles",
+        misses="Missed tackles",
+        sacks="Sacks",
+        ints="Interceptions"
+    )
+    async def add_lb_stats(self, interaction: discord.Interaction, player: str, tackles: int = 0, misses: int = 0, sacks: int = 0, ints: int = 0):
+        """Add LB stats."""
+        stats_to_add = {"tackles": tackles, "misses": misses, "sacks": sacks, "ints": ints}
+        await self._update_stats_command_handler(
+            interaction, "LB", player, stats_to_add, [], "LB Stats Updated"
+        )
+
+    @app_commands.command(name="add_p_stats", description="Record or update Pitcher statistics.")
+    @app_commands.describe(
+        player="Player name",
+        innings="Innings pitched",
+        strikeouts="Strikeouts",
+        walks="Walks",
+        hits="Hits allowed",
+        runs="Runs allowed"
+    )
+    async def add_p_stats(self, interaction: discord.Interaction, player: str, innings: float = 0.0, strikeouts: int = 0, walks: int = 0, hits: int = 0, runs: int = 0):
+        """Add Pitcher stats."""
+        stats_to_add = {"innings": innings, "strikeouts": strikeouts, "walks": walks, "hits": hits, "runs": runs}
+        await self._update_stats_command_handler(
+            interaction, "P", player, stats_to_add, ["era", "whip"], "Pitcher Stats Updated"
+        )
+
+    @app_commands.command(name="add_b_stats", description="Record or update Batter statistics.")
+    @app_commands.describe(
+        player="Player name",
+        at_bats="At-bats",
+        hits="Hits",
+        home_runs="Home runs",
+        rbis="RBIs",
+        stolen_bases="Stolen bases"
+    )
+    async def add_b_stats(self, interaction: discord.Interaction, player: str, at_bats: int = 0, hits: int = 0, home_runs: int = 0, rbis: int = 0, stolen_bases: int = 0):
+        """Add Batter stats."""
+        stats_to_add = {"at_bats": at_bats, "hits": hits, "home_runs": home_runs, "rbis": rbis, "stolen_bases": stolen_bases}
+        await self._update_stats_command_handler(
+            interaction, "B", player, stats_to_add, ["avg"], "Batter Stats Updated"
+        )
+
+    @app_commands.command(name="add_st_stats", description="Record or update Striker statistics.")
+    @app_commands.describe(
+        player="Player name",
+        goals="Goals scored",
+        shots="Shots taken",
+        assists="Assists",
+        shots_on_target="Shots on target"
+    )
+    async def add_st_stats(self, interaction: discord.Interaction, player: str, goals: int = 0, shots: int = 0, assists: int = 0, shots_on_target: int = 0):
+        """Add Striker stats."""
+        stats_to_add = {"goals": goals, "shots": shots, "assists": assists, "shots_on_target": shots_on_target}
+        await self._update_stats_command_handler(
+            interaction, "ST", player, stats_to_add, ["goal_pct"], "Striker Stats Updated"
+        )
+
+    @app_commands.command(name="add_mf_stats", description="Record or update Midfielder statistics.")
+    @app_commands.describe(
+        player="Player name",
+        passes="Passes attempted",
+        completions="Pass completions",
+        assists="Assists",
+        tackles="Tackles",
+        goals="Goals scored"
+    )
+    async def add_mf_stats(self, interaction: discord.Interaction, player: str, passes: int = 0, completions: int = 0, assists: int = 0, tackles: int = 0, goals: int = 0):
+        """Add Midfielder stats."""
+        stats_to_add = {"passes": passes, "completions": completions, "assists": assists, "tackles": tackles, "goals": goals}
+        await self._update_stats_command_handler(
+            interaction, "MF", player, stats_to_add, ["pass_pct"], "Midfielder Stats Updated"
+        )
+
+    @app_commands.command(name="add_gk_stats", description="Record or update Goalkeeper statistics.")
+    @app_commands.describe(
+        player="Player name",
+        saves="Saves made",
+        shots_faced="Shots faced",
+        goals_allowed="Goals allowed",
+        clean_sheets="Clean sheets"
+    )
+    async def add_gk_stats(self, interaction: discord.Interaction, player: str, saves: int = 0, shots_faced: int = 0, goals_allowed: int = 0, clean_sheets: int = 0):
+        """Add Goalkeeper stats."""
+        stats_to_add = {"saves": saves, "shots_faced": shots_faced, "goals_allowed": goals_allowed, "clean_sheets": clean_sheets}
+        await self._update_stats_command_handler(
+            interaction, "GK", player, stats_to_add, ["save_pct"], "Goalkeeper Stats Updated"
+        )
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
