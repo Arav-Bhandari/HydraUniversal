@@ -1,0 +1,51 @@
+2025-07-23 05:45:23,116 - bot - INFO - App command '/lfp' invoked by thezypherious.
+2025-07-23 05:45:23,632 - bot - ERROR - Bot CFFL Utilities app command 'lfp' error: type object 'EmbedBuilder' has no attribute 'create_base_embed'
+Traceback (most recent call last):
+  File "/home/container/.local/lib/python3.12/site-packages/discord/app_commands/commands.py", line 857, in _do_call
+    return await self._callback(self.binding, interaction, **params)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/container/cogs/freeagency.py", line 627, in lfp
+    lfp_embed = EmbedBuilder.create_base_embed(
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object 'EmbedBuilder' has no attribute 'create_base_embed'
+The above exception was the direct cause of the following exception:
+Traceback (most recent call last):
+  File "/home/container/.local/lib/python3.12/site-packages/discord/app_commands/tree.py", line 1310, in _call
+    await command._invoke_with_namespace(interaction, namespace)
+  File "/home/container/.local/lib/python3.12/site-packages/discord/app_commands/commands.py", line 883, in _invoke_with_namespace
+    return await self._do_call(interaction, transformed_values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/container/.local/lib/python3.12/site-packages/discord/app_commands/commands.py", line 876, in _do_call
+    raise CommandInvokeError(self, e) from e
+discord.app_commands.errors.CommandInvokeError: Command 'lfp' raised an exception: AttributeError: type object 'EmbedBuilder' has no attribute 'create_base_embed'
+2025-07-23 05:45:23,635 - asyncio - ERROR - Task exception was never retrieved
+future: <Task finished name='CommandTree-invoker' coro=<CommandTree._from_interaction.<locals>.wrapper() done, defined at /home/container/.local/lib/python3.12/site-packages/discord/app_commands/tree.py:1149> exception=InteractionResponded('This interaction has already been responded to before')>
+Traceback (most recent call last):
+  File "/home/container/.local/lib/python3.12/site-packages/discord/app_commands/commands.py", line 857, in _do_call
+    return await self._callback(self.binding, interaction, **params)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/container/cogs/freeagency.py", line 627, in lfp
+    lfp_embed = EmbedBuilder.create_base_embed(
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object 'EmbedBuilder' has no attribute 'create_base_embed'
+The above exception was the direct cause of the following exception:
+Traceback (most recent call last):
+  File "/home/container/.local/lib/python3.12/site-packages/discord/app_commands/tree.py", line 1310, in _call
+    await command._invoke_with_namespace(interaction, namespace)
+  File "/home/container/.local/lib/python3.12/site-packages/discord/app_commands/commands.py", line 883, in _invoke_with_namespace
+    return await self._do_call(interaction, transformed_values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/container/.local/lib/python3.12/site-packages/discord/app_commands/commands.py", line 876, in _do_call
+    raise CommandInvokeError(self, e) from e
+discord.app_commands.errors.CommandInvokeError: Command 'lfp' raised an exception: AttributeError: type object 'EmbedBuilder' has no attribute 'create_base_embed'
+During handling of the above exception, another exception occurred:
+Traceback (most recent call last):
+  File "/home/container/.local/lib/python3.12/site-packages/discord/app_commands/tree.py", line 1151, in wrapper
+    await self._call(interaction)
+  File "/home/container/.local/lib/python3.12/site-packages/discord/app_commands/tree.py", line 1314, in _call
+    await self.on_error(interaction, e)
+  File "/home/container/main.py", line 302, in on_app_command_error
+    await interaction.response.send_message(
+  File "/home/container/.local/lib/python3.12/site-packages/discord/interactions.py", line 976, in send_message
+    raise InteractionResponded(self._parent)
+discord.errors.InteractionResponded: This interaction has already been responded to before
