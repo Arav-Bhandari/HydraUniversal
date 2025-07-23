@@ -17,22 +17,22 @@ class ScoreReportCommands(commands.Cog):
         """Autocomplete for channels including results log channels"""
         if not interaction.guild:
             return []
-        
+
         config = get_server_config(interaction.guild.id)
         choices = []
-        
+
         # Add results log channels
         results_channels = config.get("log_channels", {}).get("results", [])
         if isinstance(results_channels, int):
             results_channels = [results_channels]
         elif not isinstance(results_channels, list):
             results_channels = []
-            
+
         for channel_id in results_channels:
             channel = interaction.guild.get_channel(channel_id)
             if channel and (not current or current.lower() in channel.name.lower()):
                 choices.append(app_commands.Choice(name=f"#{channel.name} (Results Log)", value=str(channel.id)))
-        
+
         # Add other text channels and threads
         for channel in interaction.guild.channels:
             if isinstance(channel, (discord.TextChannel, discord.Thread)):
@@ -40,7 +40,7 @@ class ScoreReportCommands(commands.Cog):
                     if len(choices) < 25:  # Discord limit
                         channel_type = "Thread" if isinstance(channel, discord.Thread) else "Channel"
                         choices.append(app_commands.Choice(name=f"#{channel.name} ({channel_type})", value=str(channel.id)))
-        
+
         return choices[:25]
 
     @app_commands.command(name="score_report", description="Report the score of a game with stat images")
@@ -181,7 +181,7 @@ class ScoreReportCommands(commands.Cog):
         # Send to specified channel or games log channels
         config = get_server_config(interaction.guild.id)
         target_channels = []
-        
+
         if channel:
             # Send to specified channel
             target_channel = interaction.guild.get_channel(int(channel))
@@ -194,12 +194,12 @@ class ScoreReportCommands(commands.Cog):
                 results_channels = [results_channels]
             elif not isinstance(results_channels, list):
                 results_channels = []
-                
+
             for channel_id in results_channels:
                 target_channel = interaction.guild.get_channel(channel_id)
                 if target_channel:
                     target_channels.append(target_channel)
-        
+
         # Send to target channels
         for target_channel in target_channels:
             try:

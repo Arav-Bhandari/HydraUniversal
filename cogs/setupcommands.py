@@ -197,6 +197,124 @@ class SetupCommands(commands.Cog):
                 if actual_config_key:
                     if field_key_page == "reminders_channel": # Special handling for reminders_channel (notification_settings)
                         channel_id_val = guild_config_live.get("notification_settings", {}).get(actual_config_key)
+
+class OwnersUpdateView(discord.ui.View):
+    """View with button to manually refresh owners list"""
+    def __init__(self, bot, guild_id: int):
+        super().__init__(timeout=None)
+        self.bot = bot
+        self.guild_id = guild_id
+        
+    @discord.ui.button(label="🔄 Update List", style=discord.ButtonStyle.primary, custom_id="owners_update_button")
+    async def update_owners_list(self, interaction: discord.Interaction, button: discord.ui.Button):
+        """Manual refresh of owners list"""
+        await interaction.response.defer()
+        
+        try:
+            config = get_server_config(self.guild_id)
+            guild = self.bot.get_guild(self.guild_id)
+            
+            if not guild:
+                await interaction.followup.send("Guild not found.", ephemeral=True)
+                return
+                
+            # Clear previous messages in channel
+            channel = interaction.channel
+            async for message in channel.history(limit=50):
+                if message.author == self.bot.user:
+                    try:
+                        await message.delete()
+                    except:
+                        pass
+            
+            # Recreate and send updated owners list
+            team_data = config.get("team_data", {})
+            permission_settings = config.get("permission_settings", {})
+            fo_role_ids = permission_settings.get("fo_roles", [])
+            
+            if not team_data or not fo_role_ids:
+                embed = discord.Embed(
+                    title="🏆 Franchise Owners Directory",
+                    description="No franchise owners configured. Use setup to assign roles and teams.",
+                    color=discord.Color.orange()
+                )
+                await channel.send(embed=embed, view=OwnersUpdateView(self.bot, self.guild_id))
+                return
+            
+            # Create updated embeds
+            embeds = []
+            current_embed = discord.Embed(
+                title="🏆 Franchise Owners Directory",
+                description="Current franchise owners and their teams:",
+                color=discord.Color.gold()
+            )
+            
+            field_count = 0
+            
+            for team_name, team_info in sorted(team_data.items()):
+                team_role_id = team_info.get("role_id")
+                team_emoji = team_info.get("emoji", "🏆")
+                
+                if not team_role_id:
+                    continue
+                    
+                team_role = guild.get_role(team_role_id)
+                if not team_role:
+                    continue
+                
+                # Find franchise owners for this team
+                team_owners = []
+                for member in guild.members:
+                    if (team_role in member.roles and 
+                        any(guild.get_role(fo_role_id) in member.roles for fo_role_id in fo_role_ids if guild.get_role(fo_role_id))):
+                        team_owners.append(member)
+                
+                if team_owners:
+                    owners_text = "\n".join([f"{member.mention} `{member.display_name}`" for member in team_owners])
+                    field_value = f"{team_emoji} {team_role.mention}\n{owners_text}"
+                    
+                    # Check if we need a new embed (25 field limit)
+                    if field_count >= 25:
+                        embeds.append(current_embed)
+                        current_embed = discord.Embed(
+                            title="🏆 Franchise Owners Directory (Continued)",
+                            color=discord.Color.gold()
+                        )
+                        field_count = 0
+                    
+                    current_embed.add_field(
+                        name=f"{team_emoji} {team_name}",
+                        value=field_value,
+                        inline=True
+                    )
+                    field_count += 1
+            
+            if field_count > 0:
+                embeds.append(current_embed)
+            
+            if not embeds:
+                embed = discord.Embed(
+                    title="🏆 Franchise Owners Directory",
+                    description="No franchise owners found. Assign the Franchise Owner role to team members.",
+                    color=discord.Color.orange()
+                )
+                embeds.append(embed)
+            
+            # Send updated embeds
+            for i, embed in enumerate(embeds):
+                if i == len(embeds) - 1:  # Add button to last embed
+                    embed.set_footer(text=f"Last updated: {discord.utils.format_dt(discord.utils.utcnow(), 'F')}")
+                    await channel.send(embed=embed, view=OwnersUpdateView(self.bot, self.guild_id))
+                else:
+                    await channel.send(embed=embed)
+                    
+            await interaction.followup.send("✅ Owners list updated successfully!", ephemeral=True)
+            
+        except Exception as e:
+            logger.error(f"Error updating owners list for guild {self.guild_id}: {e}", exc_info=True)
+            await interaction.followup.send("❌ Error updating owners list.", ephemeral=True)
+
+
                     elif field_key_page in ["announcements_channel", "free_agency_channel"]: # Announcement channels
                         channel_id_val = guild_config_live.get("announcement_channels", {}).get(actual_config_key)
                     else: # Log channels
@@ -1469,13 +1587,13 @@ class SetupPageView(View): # Use imported View
                     custom_id=select_custom_id,
                     row=i
                 )
-                select.add_option(discord.SelectOption(label="🌍 Global Default Roster Cap", value="all_teams_global_cap", emoji="🌍")) # Use discord.SelectOption
+                select.add_option(discord.SelectOption(label="🌍 Global Default Roster Cap", value="all_teams_global_cap", emoji="🌍"))
                 for team_n in teams[:23]:  # Limit options to fit Discord's max (25, minus global)
                     team_info = team_data.get(team_n, {})
                     team_emoji = team_info.get('emoji','🔹')
-                    select.add_option(discord.SelectOption(label=f"{team_emoji} {team_n}", value=team_n)) # Use discord.SelectOption
+                    select.add_option(discord.SelectOption(label=f"{team_emoji} {team_n}", value=team_n))
                 if len(teams) > 23:  # Indicate if more teams exist
-                    select.add_option(discord.SelectOption(label="More teams exist...", value="disabled_placeholder", emoji="..." )) # Use discord.SelectOption
+                    select.add_option(discord.SelectOption(label="More teams exist...", value="disabled_placeholder", emoji="..."))
 
                 select.callback = self.roster_cap_team_select_modal_launcher
                 self.add_item(select)
@@ -1741,6 +1859,9 @@ class SetupPageView(View): # Use imported View
                             inline=False)
 
             await interaction.response.edit_message(embed=embed, view=None)
+            
+            # Send owners list to owners channel if configured
+            await self._send_owners_list_if_configured()
         except Exception as e:
             logger.error(f"Failed to save config for guild {self.guild.id} via /setup: {e}", exc_info=True)
             error_embed = EmbedBuilder.error("❌ Save Error", "Failed to save configuration. Please try again or contact support if the issue persists.")
@@ -1748,6 +1869,98 @@ class SetupPageView(View): # Use imported View
         finally:
             self.cog.active_setup_sessions.pop(self.user_id, None) # Remove session regardless of save success
             self.stop()
+
+    async def _send_owners_list_if_configured(self):
+        """Send franchise owners list to owners channel if configured"""
+        try:
+            config = self.session["config"]
+            owners_channel_id = config.get("log_channels", {}).get("owners")
+            
+            if not owners_channel_id:
+                return
+            
+            owners_channel = self.guild.get_channel(owners_channel_id)
+            if not owners_channel:
+                return
+                
+            team_data = config.get("team_data", {})
+            permission_settings = config.get("permission_settings", {})
+            fo_role_ids = permission_settings.get("fo_roles", [])
+            
+            if not team_data or not fo_role_ids:
+                return
+            
+            # Create embeds for franchise owners
+            embeds = []
+            current_embed = discord.Embed(
+                title="🏆 Franchise Owners Directory",
+                description="Current franchise owners and their teams:",
+                color=discord.Color.gold()
+            )
+            
+            field_count = 0
+            
+            for team_name, team_info in sorted(team_data.items()):
+                team_role_id = team_info.get("role_id")
+                team_emoji = team_info.get("emoji", "🏆")
+                
+                if not team_role_id:
+                    continue
+                    
+                team_role = self.guild.get_role(team_role_id)
+                if not team_role:
+                    continue
+                
+                # Find franchise owners for this team
+                team_owners = []
+                for member in self.guild.members:
+                    if (team_role in member.roles and 
+                        any(self.guild.get_role(fo_role_id) in member.roles for fo_role_id in fo_role_ids if self.guild.get_role(fo_role_id))):
+                        team_owners.append(member)
+                
+                if team_owners:
+                    owners_text = "\n".join([f"{member.mention} `{member.display_name}`" for member in team_owners])
+                    field_value = f"{team_emoji} {team_role.mention}\n{owners_text}"
+                    
+                    # Check if we need a new embed (25 field limit)
+                    if field_count >= 25:
+                        embeds.append(current_embed)
+                        current_embed = discord.Embed(
+                            title="🏆 Franchise Owners Directory (Continued)",
+                            color=discord.Color.gold()
+                        )
+                        field_count = 0
+                    
+                    current_embed.add_field(
+                        name=f"{team_emoji} {team_name}",
+                        value=field_value,
+                        inline=True
+                    )
+                    field_count += 1
+            
+            if field_count > 0:
+                embeds.append(current_embed)
+            
+            if not embeds:
+                # Send a message indicating no owners found
+                embed = discord.Embed(
+                    title="🏆 Franchise Owners Directory",
+                    description="No franchise owners found. Assign the Franchise Owner role to team members.",
+                    color=discord.Color.orange()
+                )
+                embeds.append(embed)
+            
+            # Send embeds with update button
+            for i, embed in enumerate(embeds):
+                if i == len(embeds) - 1:  # Add button to last embed
+                    embed.set_footer(text="Updates automatically every 24 hours")
+                    view = OwnersUpdateView(self.cog.bot, self.guild.id)
+                    await owners_channel.send(embed=embed, view=view)
+                else:
+                    await owners_channel.send(embed=embed)
+                    
+        except Exception as e:
+            logger.error(f"Error sending owners list to owners channel for guild {self.guild.id}: {e}", exc_info=True)
 
 class AutoSetupConfirmationView(View): # Use imported View
     """View for confirming auto-detected setup items from /autosetup."""

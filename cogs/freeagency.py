@@ -684,7 +684,7 @@ class FreeAgencyManagerCog(commands.Cog):
             # It's okay if no managers are found; the post can still be made.
 
         # --- Create the LFP Embed ---
-        lfp_embed = EmbedBuilder.create_base_embed(
+        lfp_embed = EmbedBuilder.info(
             title=f"📣 {team_name} is Looking For Players!",
             description=f"**{team_name}** is actively recruiting new talent!",
             color=EmbedBuilder.COLORS['gold']
