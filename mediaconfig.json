@@ -1,0 +1,3535 @@
+{
+    "1334976589284245547": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1335560058100252722": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1317924050722361424": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1353450018807218197": {
+        "media_channel": "1353451183968223352",
+        "media_owner": "1099798391535439913",
+        "cohosts": [
+            "1287541616436969514",
+            "1191091808252461146",
+            "1311751109492342784"
+        ],
+        "ping_role": "1370864422414848110",
+        "ping_log": {
+            "1353451183968223352": [
+                "2025-06-08T16:21:33.292905+00:00"
+            ]
+        }
+    },
+    "1348033444738764831": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1287602982665453579": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1322278673834971148": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1080905894159732806": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1365151511012970687": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1291475320326590516": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1312937848474963981": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1330217952431308954": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1252414191583891536": {
+        "media_channel": "1371544886657941524",
+        "media_owner": "1099798391535439913",
+        "cohosts": [],
+        "ping_role": "1252420634735153295",
+        "ping_log": {}
+    },
+    "1322718317479198751": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1278369915275051022": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1333905246690480148": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1357213036427088013": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1356746982668112043": {
+        "media_channel": "1381049562180878416",
+        "media_owner": "1082421903647571968",
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1273378684312752209": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1360694582421094664": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1256360026352779355": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1367005139361075200": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1358482089527476337": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1369845068575408168": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1370210533055397999": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1368186644573716512": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1369844492609261698": {
+        "media_channel": "1370227983956316301",
+        "media_owner": "1311751109492342784",
+        "cohosts": [],
+        "ping_role": "1370150594425131058",
+        "ping_log": {}
+    },
+    "1345191741719973999": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1364004164824334366": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1370789338652217395": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1300130472323452978": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1369082622743019520": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1174445868691226676": {
+        "media_channel": "1385082849450917940",
+        "media_owner": "1072657127522451508",
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1297630539682938972": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1349924590775959572": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1371213563317981368": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1363670360486183032": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1343152065769373736": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1100568646276874312": {
+        "media_channel": "1371330526882824212",
+        "media_owner": "1221659297604304949",
+        "cohosts": [],
+        "ping_role": "1233591738413617152",
+        "ping_log": {
+            "1371330526882824212": []
+        }
+    },
+    "1085244573309222973": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1360677435099840642": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1371308134471307365": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1269669998163660883": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1371409189951508572": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1371219008833196073": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1356310709922959500": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1327440685888045148": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1270478284466946179": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1362616995866214480": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1288340475430047744": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1361020730388648098": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1367109775451754529": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1364142052144844830": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1370422170651726036": {
+        "media_channel": "1370673246126604339",
+        "media_owner": "1099798391535439913",
+        "cohosts": [
+            "1177290470280400899"
+        ],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1338993543921926225": {
+        "media_channel": "1373428875371216997",
+        "media_owner": "667199698695749692",
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1364052006137892870": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1196373701160083556": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1296539368349110353": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1370224410178486474": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1195564128790655048": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1353940175243448402": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1257566206919966782": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1371671098650923120": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1363665628980052018": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1320949368039276634": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1372088070429478954": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1260821937937055794": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1368560827438989434": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1372198542705430599": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1370605353917616128": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1331516712339902495": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1092116857496010912": {
+        "media_channel": "1396519219532791879",
+        "media_owner": "937035057477087232",
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1322401482552770621": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1352488335419113472": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1361086878459101334": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1307813519114371253": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1364589837885243463": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1373363892788662282": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1373297078666792960": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1319307513711169557": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1373454003383308459": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1272747523567779850": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1373419496202567750": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1373474361943523409": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1370829183403688028": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1369812952659525632": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1373739703865573376": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1352831745791102986": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1273326810288885885": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1342995522985787407": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1361889606974570799": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1305987244817121380": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1218225045894332499": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1374177720799592448": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1374203380280594534": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1274082158709047337": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "949427132306710529": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1323065944083267614": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1170359128481341491": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1367653845311950918": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1374736932315074754": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1216475185943810098": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1374865864091762801": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1353589346191806485": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1236287552277712946": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1374862431314120796": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1304751420825931778": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1375196522043539486": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1372000791736614922": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1360547704790319135": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1350575416041148467": {
+        "media_channel": "1361190031590555873",
+        "media_owner": "501914920925790208",
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1375270334441459824": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1345762787049341048": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1375492247985852476": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1367627531599085699": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1372364190467100763": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1356430802128474345": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1336459055388037141": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1374824123800354876": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1375912825813209223": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1331425270439350282": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1366906253955305522": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1334162347496837130": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1238120002427687036": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1376044667996602440": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1376212065471172639": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1371315268126507108": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1352814783954419772": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1376573221691854938": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": "1376575510812950651",
+        "ping_log": {}
+    },
+    "1376572859530477660": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1376566499493417030": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1376622562741587998": {
+        "media_channel": "1376622564083765265",
+        "media_owner": "1361369425189798018",
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1351309662573826098": {
+        "media_channel": "1378830548931182603",
+        "media_owner": "1099798391535439913",
+        "cohosts": [],
+        "ping_role": "1351320073436139602",
+        "ping_log": {
+            "1378830548931182603": [
+                "2025-06-02T22:01:47.766463"
+            ]
+        }
+    },
+    "1376746902447587469": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1123264232645984286": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1343628340275449959": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1370508175739981864": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1261248311038443613": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1298607814054379612": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1372411533765906483": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1377250238275911701": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1374285005966020740": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1306159724135452682": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1216456264205471857": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1377432647529402529": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1377470051388493857": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1341765188415651943": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1377679224139288740": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1377751233623752774": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1376712276995735674": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1377702993209856000": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1377769688624267294": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1355519661470650419": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1311092765911683142": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1377879062567190548": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1368889091180986419": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1378045712587292762": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1319822089271906445": {
+        "media_channel": "1319822089271906448",
+        "media_owner": "1370146676630880256",
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1324356847590707242": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1329941886307143741": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1378380039158235148": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1376566464357601381": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1325157857120751739": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1374535596034363402": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1376698825993093120": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1358366160676192438": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1377426018490384404": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1378832440704897166": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1378838014406430830": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1356065162909712547": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1266249562142806056": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1379143905425100982": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1377754419076141136": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1379059956627537920": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1379105728618434570": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1374289375222829100": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1378221572417912962": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1379280686002999508": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1371097076221350019": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1356119939911782500": {
+        "media_channel": "1376256023752609918",
+        "media_owner": "1273822072757293210",
+        "cohosts": [],
+        "ping_role": "1356119939949531203",
+        "ping_log": {
+            "1365825151286906981": [
+                "2025-06-05T23:19:40.147955"
+            ]
+        }
+    },
+    "1246527646448353410": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1376643076583587860": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1273589374474256461": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1367995799656726742": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1377964451902525571": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1375855054464225310": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1364743665939124306": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1379983255637327942": {
+        "media_channel": "1385757537705529374",
+        "media_owner": "1264259352483725348",
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1380654171744895008": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1380692310442115222": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1274408742292553841": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "751224936500297738": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1290354776990679164": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1380783713855733770": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1380899407997964412": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1359635911175835879": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1377662029329993819": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1379241682780033024": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1380712621912625163": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1370953614612500531": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1376753978640957570": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1220383490684747806": {
+        "media_channel": "1381032814681657465",
+        "media_owner": "1099798391535439913",
+        "cohosts": [
+            "1287541616436969514"
+        ],
+        "ping_role": "1220383490709913747",
+        "ping_log": {
+            "1381032814681657465": [
+                "2025-06-12T20:43:05.100050+00:00"
+            ]
+        }
+    },
+    "1381157213627744377": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1381308925701259305": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1378132693883289641": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1381331208696369162": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": "1381331208725598397",
+        "ping_log": {}
+    },
+    "1381344784815489024": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "944292895068930048": {
+        "media_channel": "1375958763646877716",
+        "media_owner": "925134557643178085",
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1210689430076137492": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1380568579128168500": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1143922747702001815": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1299641803598987265": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1381690487471083550": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1372285256446513232": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1381031999426527342": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1382049855802708038": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1372703904411943034": {
+        "media_channel": "1372704137996800010",
+        "media_owner": "1311751109492342784",
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1376568951651438614": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1378908605226549399": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1380385649588310078": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1382685732635807775": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1382136451059421244": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1270886338253815932": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1382941575524651139": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1290399661823103006": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1380732263292993547": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1383141843012944054": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1355293567886561320": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1373130256730292274": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1383219733658337351": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1377368326262624436": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": "1380267915454189678",
+        "ping_log": {}
+    },
+    "1383467092187025528": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1383294540701761537": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1227082720358957126": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1377767992171040809": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1082038252049027233": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1382830142694625400": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1348025515419897987": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1379983611796656148": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1372762142402678945": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1382819722722152598": {
+        "media_channel": "1383821168611557396",
+        "media_owner": "1360685194083827802",
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1382824708663414905": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1383843713796673617": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1377789121036161085": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1383928863045976145": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1379879059995234407": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "333949691962195969": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1384201211665977537": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1378187350252851303": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1382986622986883102": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1384338908887912648": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1381483108557131817": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1384418447945105522": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1384468627167641713": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1301969195965218917": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1376996212858814564": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1384245060391932034": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1384737297966305383": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1382886821821812807": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1384657479660474388": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1251158624722485288": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1384915756830949548": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1368471513539543100": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1385066269266546759": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1384053894451036171": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1382350006564028557": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": "1384904032513953822",
+        "ping_log": {}
+    },
+    "1384629829005082846": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1383301040903819264": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1376454417829859358": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1161843623571239053": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1151282116169052260": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1385487985146986546": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1201653894820941924": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1284210034913574995": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1384329385309634601": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1366288813009141781": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1385291851824762910": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1315767150241382512": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1378111213493555342": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1373636408815784007": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1274369385003483229": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1183494480461045831": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1385786332856451214": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1361108766216556544": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1386117102884356189": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1385773214268915873": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1374960149353205820": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1386424354887307444": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1331803639886647390": {
+        "media_channel": "1385848287814352926",
+        "media_owner": "921920970724352020",
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1370406472525025351": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1386784664915546314": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1377370541505253376": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1386832774970736710": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1386841970525077564": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1272018362221989888": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1386198969658638437": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1386819924701216858": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1386875777147998209": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1386922656284147723": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1386946827638800486": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1341972863606853735": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1387062320278011924": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1381423003489013902": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1386954669200248982": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1387177662950146168": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1387183879756054731": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1387229003970117673": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1322632798494003330": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1387460712649068594": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1387617347317141556": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1387293897788624967": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1387647836769747055": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1384469279545495552": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1387511213478383678": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1354945321221886152": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1386482811946664006": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1385674737564516443": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1387837683648434247": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1385840364958777436": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1366820844898226249": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1370114926009516043": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1387937370107805820": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1385760747526820001": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1374426534521077790": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1388087120018542652": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1387788504687317135": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1388229458145710090": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1387608023140274218": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1388259274630893759": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1387288838665273364": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1383327728257994812": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1388385528042229874": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1388458030621921292": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1388469618926157864": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1388521806301761577": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1388533153924255845": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1387492925688254544": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1366417106761158797": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1276387131660701738": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1388664849705467907": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1388951688068595802": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1388963155018776606": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1388695033091194910": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1388720616793964604": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1132173574099189871": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1389073859726147584": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1387874702839513128": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1389105134906380308": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1389115852682559498": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1388321972206829569": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1389351018936143882": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1261103487891013693": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1389368817049665606": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1388461156649140256": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1383209190528651345": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1388365594893488210": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1388993179541438474": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1388582355031298179": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1389388021413056634": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1343972243801247804": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1388913380001189978": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1389367393427394761": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1375930484114329772": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1388336109334822934": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1389820040555135038": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1389849391296417793": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1381390470051008653": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1389264930221330685": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1390001613514604617": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1389808587811065899": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1202160606313185320": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1390133248918687784": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1389778158672154644": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1205988197839142952": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1390342251372085308": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1389378594219884604": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1389951721698099221": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1390417041764122767": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1008581019554807908": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1389776366412501072": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1390461481753247764": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1390529840435691650": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1378117797678288989": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1267143760484110368": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1381411984830107738": {
+        "media_channel": "1389045952567972011",
+        "media_owner": "1170379652586537046",
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1251670819394949261": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1390497752756260934": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1390895740561260556": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1390937495113437377": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1390987802140872746": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1368395031878303886": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1315903439015776276": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1390783181908873306": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1391113596154675294": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1377153735591071885": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1391181029536174080": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1387170075177521162": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1379198044729376858": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1387638963984138352": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "711243828778237994": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1391232777290125415": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1390101934811385857": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1391483838722474167": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1330399009449443370": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1379652031622680626": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1391635638096494652": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1378728036874195009": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1391611742651416646": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1391683722855714886": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1390763170473312256": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1391414463005200575": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1391911271053660375": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1391975701745504268": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1381347391743066372": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1391984157265100801": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1391648404743917568": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1389953478390059200": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1391995479293825094": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1315173091994898462": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1391520275832770610": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1392273269683650791": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1392286353349410837": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1391883924271136808": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1392493106724868116": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1392533914144215162": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1392535697289908295": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1390882073136463932": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1384727249168633927": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1392572358669111457": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1390886642335613081": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1392607687400886282": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1392732230807326720": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1389027916326637751": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1270018786799386736": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1388490276942643220": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1392910221483180093": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1328023830157070336": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1380351446591209544": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1296726849501532201": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1392655269498191992": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1392659454045982861": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1388953094728978464": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1340086587505250369": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1390833693551235165": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1224072785899425874": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1392346967589257377": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1368870750739501076": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1392850481021325433": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1392994716827652240": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1367250159989297264": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1393305625148264660": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1385831047752716438": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1392296637115928576": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1393306382467596559": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1393474308214489178": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1389482454158409892": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1393467662465761360": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1335699067581370419": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1383001218095251478": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1394269201912303628": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1270209020640366677": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1391534677449248838": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1394333817967345767": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1394395792168456232": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1386521060538585128": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1291516961502658642": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1394384844817170454": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1394546394831917236": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1329625732141289534": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1382271067287978036": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1068952684826218606": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1395054679448354887": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1395130131122491422": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1394048824405921933": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1388364811884298351": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1385859554918797506": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1396294318683062282": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1391099803898875964": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1391358484444090459": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1396224571216236756": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1388540392265351301": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1395922767882485861": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1252773630547595354": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1396582160647065732": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1396542192977444895": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1396650517316374558": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1389756021362262207": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1090082138981928972": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1396704423157301279": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1396728248049602632": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1342608478371577887": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1354323561212411914": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "958185977724174367": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1353734054578622524": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1395988091591852052": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1397038614491168788": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1397119459637854218": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1395539498451865683": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1330729934259355678": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1397261845940801649": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    },
+    "1397292392910028860": {
+        "media_channel": null,
+        "media_owner": null,
+        "cohosts": [],
+        "ping_role": null,
+        "ping_log": {}
+    }
+}

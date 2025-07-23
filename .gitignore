@@ -4,6 +4,4 @@
 .local/
 discord.log
 premium_security_data/
-
-# JSON configuration files
-*.json
+__pycache__/
