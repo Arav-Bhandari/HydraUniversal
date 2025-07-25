@@ -163,7 +163,7 @@ class OfferButton(discord.ui.Button):
         # --- Delegate logic to the FreeAgencyManagerCog instance ---
         fa_manager_cog = self.parent_view.bot.get_cog("FreeAgencyManagerCog")
         if not fa_manager_cog:
-            await interaction.response.send_message(embed=EmbedBuilder.error("Cog Missing", "FreeAgencyManagerCog not loaded. Cannot process offer."), ephemeral=True)
+            await interaction.response.send_message(embed=PremiumEmbedBuilder.create_base_embed("Cog Missing", "FreeAgencyManagerCog not loaded. Cannot process offer.", PremiumEmbedBuilder.COLORS['error']), ephemeral=True)
             return
 
         # Call the method that handles checks and displays the modal.
@@ -202,7 +202,7 @@ class InitiateOfferModal(discord.ui.Modal):
         # Delegate the core offer creation logic to the FreeAgencyManagerCog itself.
         fa_manager_cog = self.bot.get_cog("FreeAgencyManagerCog")
         if not fa_manager_cog:
-            await interaction.followup.send(embed=EmbedBuilder.error("Cog Missing", "FreeAgencyManagerCog not loaded. Cannot process offer."), ephemeral=True)
+            await interaction.followup.send(embed=PremiumEmbedBuilder.create_base_embed("Cog Missing", "FreeAgencyManagerCog not loaded. Cannot process offer.", PremiumEmbedBuilder.COLORS['error']), ephemeral=True)
             return
 
         success = await fa_manager_cog._send_offer_from_lft( # Call the internal method
@@ -684,10 +684,10 @@ class FreeAgencyManagerCog(commands.Cog):
             # It's okay if no managers are found; the post can still be made.
 
         # --- Create the LFP Embed ---
-        lfp_embed = EmbedBuilder.base_embed(
+        lfp_embed = PremiumEmbedBuilder.create_base_embed(
             title=f"📣 {team_name} is Looking For Players!",
             description=f"**{team_name}** is actively recruiting new talent!",
-            color=EmbedBuilder.COLORS['gold']
+            color=PremiumEmbedBuilder.COLORS['gold']
         )
         # Add team branding
         team_specific_data = guild_config.get("team_data", {}).get(team_name, {})
