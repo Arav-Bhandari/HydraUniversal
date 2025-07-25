@@ -404,6 +404,24 @@ class Stats(commands.Cog):
         self.stat_key_display_names = STAT_KEY_DISPLAY_NAMES
         self.game_types = GAME_TYPES
 
+    async def cog_load(self):
+        """Sync stats commands only to configured guilds."""
+        # Load guild game types
+        guild_game_types = load_guild_game_types()
+        
+        # Sync commands only to guilds with configured game types
+        for guild_id_str in guild_game_types.keys():
+            try:
+                guild_id = int(guild_id_str)
+                guild = self.bot.get_guild(guild_id)
+                if guild:
+                    # Copy commands to guild tree
+                    self.bot.tree.copy_global_to(guild=guild)
+                    await self.bot.tree.sync(guild=guild)
+                    logger.info(f"Synced stats commands to guild {guild.name} ({guild_id})")
+            except Exception as e:
+                logger.error(f"Failed to sync stats commands to guild {guild_id_str}: {e}")
+
     async def cog_check(self, ctx):
         """Check for Statistician role."""
         # Get the member object properly

@@ -248,8 +248,30 @@ async def setup_bot(token, category):
         
         # Sync application commands
         try:
+            # Load guild game types configuration
+            guild_game_types = {}
+            try:
+                with open("data/guild_game_types.json", "r") as f:
+                    guild_game_types = json.load(f)
+            except (FileNotFoundError, json.JSONDecodeError):
+                pass
+            
+            # Perform guild-specific syncing for stats commands
+            stats_guilds_synced = 0
+            for guild in bot.guilds:
+                guild_id_str = str(guild.id)
+                if guild_id_str in guild_game_types:
+                    try:
+                        # Only sync to guilds that have configured game types
+                        synced_guild = await bot.tree.sync(guild=guild)
+                        stats_guilds_synced += 1
+                        logger.info(f"Bot {bot.user.name} synced {len(synced_guild)} command(s) to guild {guild.name} ({guild.id})")
+                    except Exception as e:
+                        logger.error(f"Bot {bot.user.name} failed to sync commands to guild {guild.name} ({guild.id}): {e}")
+            
+            # Global sync for non-stats commands
             synced = await bot.tree.sync()
-            logger.info(f"Bot {bot.user.name} synced {len(synced)} application command(s)")
+            logger.info(f"Bot {bot.user.name} synced {len(synced)} global command(s) and {stats_guilds_synced} guild-specific syncs")
         except Exception as e:
             logger.error(f"Bot {bot.user.name} failed to sync commands: {e}")
         
