@@ -1,3 +1,4 @@
+
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -9,7 +10,6 @@ import csv
 import io
 from datetime import datetime, timezone
 from typing import List, Dict, Optional, Union
-import uuid
 
 # --- Utility Imports ---
 try:
@@ -176,6 +176,19 @@ STAT_KEY_DISPLAY_NAMES = {
 def get_stat_file_path(game_type, category):
     """Generate file path for game-type-specific stat files."""
     return f"data/{game_type.lower()}_{category.lower()}_stats.json"
+
+def load_guild_game_types():
+    """Load guild game type configurations from JSON."""
+    try:
+        with open("data/guild_game_types.json", "r") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+
+def get_guild_game_type(guild_id):
+    """Get the game type for a specific guild."""
+    guild_game_types = load_guild_game_types()
+    return guild_game_types.get(str(guild_id), "7v7")  # Default to 7v7
 
 # Ensure data directory and stat files exist
 os.makedirs("data", exist_ok=True)
@@ -527,69 +540,6 @@ class Stats(commands.Cog):
 
         return fields
 
-    async def register_commands_for_guild(self, guild_id):
-        """Register commands for a specific guild based on its game type."""
-        config = get_server_config(guild_id)
-        game_type = config.get("game_type", "7v7")  # Default to 7v7 if not set
-        if game_type not in self.game_types:
-            logger.warning(f"Invalid game type {game_type} for guild {guild_id}. Using default.")
-            game_type = "7v7"
-
-        guild = discord.Object(id=guild_id)
-        try:
-            self.bot.tree.clear_commands(guild=guild)
-        except Exception as e:
-            logger.warning(f"Could not clear commands for guild {guild_id}: {e}")
-
-        game_config = self.game_types.get(game_type, self.game_types["7v7"])
-
-        # Register statview and statleaderboard
-        self.bot.tree.add_command(self.statview, guild=guild)
-        self.bot.tree.add_command(self.statleaderboard, guild=guild)
-
-        # Register admin commands
-        self.bot.tree.add_command(self.statmerge, guild=guild)
-        self.bot.tree.add_command(self.statclear, guild=guild)
-        self.bot.tree.add_command(self.statexport, guild=guild)
-        self.bot.tree.add_command(self.stat_config, guild=guild)
-
-        # Add static position-specific commands
-        self._register_position_commands(guild, game_type)
-
-        try:
-            await self.bot.tree.sync(guild=guild)
-            logger.info(f"Commands synced for guild {guild_id} with game type {game_type}")
-        except Exception as e:
-            logger.error(f"Failed to sync commands for guild {guild_id}: {e}")
-
-    def _register_position_commands(self, guild, game_type):
-        """Register position-specific stat commands."""
-        game_config = self.game_types.get(game_type, self.game_types["7v7"])
-        
-        for category in game_config["categories"]:
-            if category == "QB":
-                self.bot.tree.add_command(self.add_qb_stats, guild=guild)
-            elif category == "WR":
-                self.bot.tree.add_command(self.add_wr_stats, guild=guild)
-            elif category == "CB":
-                self.bot.tree.add_command(self.add_cb_stats, guild=guild)
-            elif category == "DE":
-                self.bot.tree.add_command(self.add_de_stats, guild=guild)
-            elif category == "RB":
-                self.bot.tree.add_command(self.add_rb_stats, guild=guild)
-            elif category == "LB":
-                self.bot.tree.add_command(self.add_lb_stats, guild=guild)
-            elif category == "P":
-                self.bot.tree.add_command(self.add_p_stats, guild=guild)
-            elif category == "B":
-                self.bot.tree.add_command(self.add_b_stats, guild=guild)
-            elif category == "ST":
-                self.bot.tree.add_command(self.add_st_stats, guild=guild)
-            elif category == "MF":
-                self.bot.tree.add_command(self.add_mf_stats, guild=guild)
-            elif category == "GK":
-                self.bot.tree.add_command(self.add_gk_stats, guild=guild)
-
     @app_commands.command(name="stat_config", description="Configure the game type for this server (Admin only).")
     @app_commands.describe(game_type="The type of game for this server.")
     @app_commands.choices(game_type=[
@@ -622,23 +572,17 @@ class Stats(commands.Cog):
                 await interaction.response.send_message(embed=embed, ephemeral=True)
                 return
 
-            # Get current config
-            config = get_server_config(interaction.guild_id)
-            if not isinstance(config, dict):
-                config = get_default_config()
+            # Update guild game type configuration
+            guild_game_types = load_guild_game_types()
+            guild_game_types[str(interaction.guild_id)] = game_type
             
-            # Update game type
-            config["game_type"] = game_type
-            update_server_config(interaction.guild_id, "game_type", game_type)
-            save_guild_config(interaction.guild_id, config)
-
-            # Register new commands for this game type
-            await self.register_commands_for_guild(interaction.guild_id)
+            with open("data/guild_game_types.json", "w") as f:
+                json.dump(guild_game_types, f, indent=4)
 
             # Create success embed with enhanced styling
             embed = self.create_enhanced_embed(
                 "⚙️ Game Type Configured Successfully",
-                f"✅ Game type set to **{game_type}** for **{interaction.guild.name}**\n\n🔄 Commands have been updated and synced automatically.",
+                f"✅ Game type set to **{game_type}** for **{interaction.guild.name}**\n\n🔄 Commands will now use this game type automatically.",
                 discord.Color.green(),
                 interaction
             )
@@ -680,14 +624,13 @@ class Stats(commands.Cog):
     @app_commands.describe(category="The position category.", player="The name of the player.")
     async def statview(self, interaction: discord.Interaction, category: str, player: str):
         """View player stats for the guild's game type."""
-        config = get_server_config(interaction.guild_id)
-        game_type = config.get("game_type", "7v7")
+        game_type = get_guild_game_type(interaction.guild_id)
         game_config = self.game_types.get(game_type, self.game_types["7v7"])
 
         if category not in game_config["categories"]:
             await interaction.response.send_message(embed=self.create_beautiful_embed(
                 interaction, "⚠️ Invalid Category",
-                f"Category **{category}** is not valid for game type **{game_type}**.",
+                f"Category **{category}** is not valid for game type **{game_type}**.\n\nValid categories: {', '.join(game_config['categories'])}",
                 discord.Color.orange()
             ), ephemeral=True)
             return
@@ -729,14 +672,13 @@ class Stats(commands.Cog):
     @app_commands.describe(category="The position category.")
     async def statleaderboard(self, interaction: discord.Interaction, category: str):
         """Display leaderboard for a category."""
-        config = get_server_config(interaction.guild_id)
-        game_type = config.get("game_type", "7v7")
+        game_type = get_guild_game_type(interaction.guild_id)
         game_config = self.game_types.get(game_type, self.game_types["7v7"])
 
         if category not in game_config["categories"]:
             await interaction.response.send_message(embed=self.create_beautiful_embed(
                 interaction, "⚠️ Invalid Category",
-                f"Category **{category}** is not valid for game type **{game_type}**.",
+                f"Category **{category}** is not valid for game type **{game_type}**.\n\nValid categories: {', '.join(game_config['categories'])}",
                 discord.Color.orange()
             ), ephemeral=True)
             return
@@ -827,8 +769,7 @@ class Stats(commands.Cog):
 
     async def _update_stats_command_handler(self, interaction: discord.Interaction, category: str, player: str, stats_to_add: dict, derived_stat_keys: list, success_message_prefix: str):
         """Handle stat updates."""
-        config = get_server_config(interaction.guild_id)
-        game_type = config.get("game_type", "7v7")
+        game_type = get_guild_game_type(interaction.guild_id)
         file_path = get_stat_file_path(game_type, category)
 
         for key, value in stats_to_add.items():
@@ -918,8 +859,7 @@ class Stats(commands.Cog):
     )
     async def statmerge(self, interaction: discord.Interaction, category: str, player1: str, player2: str, new_player: str):
         """Merge stats of two players."""
-        config = get_server_config(interaction.guild_id)
-        game_type = config.get("game_type", "7v7")
+        game_type = get_guild_game_type(interaction.guild_id)
         game_config = self.game_types.get(game_type, self.game_types["7v7"])
 
         if not interaction.user.guild_permissions.administrator:
@@ -1046,8 +986,7 @@ class Stats(commands.Cog):
     @app_commands.command(name="statclear", description="Clear all stats for this server (Admin only).")
     async def statclear(self, interaction: discord.Interaction):
         """Clear all stats for the guild."""
-        config = get_server_config(interaction.guild_id)
-        game_type = config.get("game_type", "7v7")
+        game_type = get_guild_game_type(interaction.guild_id)
         game_config = self.game_types.get(game_type, self.game_types["7v7"])
 
         if not interaction.user.guild_permissions.administrator:
@@ -1086,8 +1025,7 @@ class Stats(commands.Cog):
     @app_commands.command(name="statexport", description="Export stats to CSV.")
     async def statexport(self, interaction: discord.Interaction):
         """Export stats to CSV file."""
-        config = get_server_config(interaction.guild_id)
-        game_type = config.get("game_type", "7v7")
+        game_type = get_guild_game_type(interaction.guild_id)
         game_config = self.game_types.get(game_type, self.game_types["7v7"])
 
         guild_id_str = str(interaction.guild_id)
@@ -1159,7 +1097,7 @@ class Stats(commands.Cog):
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    # Position-specific stat commands
+    # Position-specific stat commands - all static, no dynamic registration needed
     @app_commands.command(name="add_qb_stats", description="Record or update Quarterback statistics.")
     @app_commands.describe(
         player="Player name",
@@ -1172,6 +1110,18 @@ class Stats(commands.Cog):
     )
     async def add_qb_stats(self, interaction: discord.Interaction, player: str, comp: int = 0, att: int = 0, yards: int = 0, tds: int = 0, ints: int = 0, sacks: int = 0):
         """Add QB stats."""
+        game_type = get_guild_game_type(interaction.guild_id)
+        if "QB" not in self.game_types.get(game_type, {}).get("categories", []):
+            await interaction.response.send_message(
+                embed=self.create_beautiful_embed(
+                    interaction, "⚠️ Invalid Position",
+                    f"QB is not available for game type **{game_type}**.",
+                    discord.Color.orange()
+                ),
+                ephemeral=True
+            )
+            return
+        
         stats_to_add = {"comp": comp, "att": att, "yards": yards, "tds": tds, "ints": ints, "sacks": sacks}
         await self._update_stats_command_handler(
             interaction, "QB", player, stats_to_add,
@@ -1189,6 +1139,18 @@ class Stats(commands.Cog):
     )
     async def add_wr_stats(self, interaction: discord.Interaction, player: str, catches: int = 0, targets: int = 0, tds: int = 0, yac: int = 0, yards: int = 0):
         """Add WR stats."""
+        game_type = get_guild_game_type(interaction.guild_id)
+        if "WR" not in self.game_types.get(game_type, {}).get("categories", []):
+            await interaction.response.send_message(
+                embed=self.create_beautiful_embed(
+                    interaction, "⚠️ Invalid Position",
+                    f"WR is not available for game type **{game_type}**.",
+                    discord.Color.orange()
+                ),
+                ephemeral=True
+            )
+            return
+        
         stats_to_add = {"catches": catches, "targets": targets, "tds": tds, "yac": yac, "yards": yards}
         await self._update_stats_command_handler(
             interaction, "WR", player, stats_to_add,
@@ -1206,6 +1168,18 @@ class Stats(commands.Cog):
     )
     async def add_cb_stats(self, interaction: discord.Interaction, player: str, ints: int = 0, targets: int = 0, swats: int = 0, tds: int = 0, comp_allowed: int = 0):
         """Add CB stats."""
+        game_type = get_guild_game_type(interaction.guild_id)
+        if "CB" not in self.game_types.get(game_type, {}).get("categories", []):
+            await interaction.response.send_message(
+                embed=self.create_beautiful_embed(
+                    interaction, "⚠️ Invalid Position",
+                    f"CB is not available for game type **{game_type}**.",
+                    discord.Color.orange()
+                ),
+                ephemeral=True
+            )
+            return
+        
         stats_to_add = {"ints": ints, "targets": targets, "swats": swats, "tds": tds, "comp_allowed": comp_allowed}
         await self._update_stats_command_handler(
             interaction, "CB", player, stats_to_add,
@@ -1222,6 +1196,18 @@ class Stats(commands.Cog):
     )
     async def add_de_stats(self, interaction: discord.Interaction, player: str, tackles: int = 0, misses: int = 0, sacks: int = 0, safeties: int = 0):
         """Add DE stats."""
+        game_type = get_guild_game_type(interaction.guild_id)
+        if "DE" not in self.game_types.get(game_type, {}).get("categories", []):
+            await interaction.response.send_message(
+                embed=self.create_beautiful_embed(
+                    interaction, "⚠️ Invalid Position",
+                    f"DE is not available for game type **{game_type}**.",
+                    discord.Color.orange()
+                ),
+                ephemeral=True
+            )
+            return
+        
         stats_to_add = {"tackles": tackles, "misses": misses, "sacks": sacks, "safeties": safeties}
         await self._update_stats_command_handler(
             interaction, "DE", player, stats_to_add, [], "DE Stats Updated"
@@ -1237,6 +1223,18 @@ class Stats(commands.Cog):
     )
     async def add_rb_stats(self, interaction: discord.Interaction, player: str, rushes: int = 0, yards: int = 0, tds: int = 0, fumbles: int = 0):
         """Add RB stats."""
+        game_type = get_guild_game_type(interaction.guild_id)
+        if "RB" not in self.game_types.get(game_type, {}).get("categories", []):
+            await interaction.response.send_message(
+                embed=self.create_beautiful_embed(
+                    interaction, "⚠️ Invalid Position",
+                    f"RB is not available for game type **{game_type}**.",
+                    discord.Color.orange()
+                ),
+                ephemeral=True
+            )
+            return
+        
         stats_to_add = {"rushes": rushes, "yards": yards, "tds": tds, "fumbles": fumbles}
         await self._update_stats_command_handler(
             interaction, "RB", player, stats_to_add, ["ypr"], "RB Stats Updated"
@@ -1252,6 +1250,18 @@ class Stats(commands.Cog):
     )
     async def add_lb_stats(self, interaction: discord.Interaction, player: str, tackles: int = 0, misses: int = 0, sacks: int = 0, ints: int = 0):
         """Add LB stats."""
+        game_type = get_guild_game_type(interaction.guild_id)
+        if "LB" not in self.game_types.get(game_type, {}).get("categories", []):
+            await interaction.response.send_message(
+                embed=self.create_beautiful_embed(
+                    interaction, "⚠️ Invalid Position",
+                    f"LB is not available for game type **{game_type}**.",
+                    discord.Color.orange()
+                ),
+                ephemeral=True
+            )
+            return
+        
         stats_to_add = {"tackles": tackles, "misses": misses, "sacks": sacks, "ints": ints}
         await self._update_stats_command_handler(
             interaction, "LB", player, stats_to_add, [], "LB Stats Updated"
@@ -1268,6 +1278,18 @@ class Stats(commands.Cog):
     )
     async def add_p_stats(self, interaction: discord.Interaction, player: str, innings: float = 0.0, strikeouts: int = 0, walks: int = 0, hits: int = 0, runs: int = 0):
         """Add Pitcher stats."""
+        game_type = get_guild_game_type(interaction.guild_id)
+        if "P" not in self.game_types.get(game_type, {}).get("categories", []):
+            await interaction.response.send_message(
+                embed=self.create_beautiful_embed(
+                    interaction, "⚠️ Invalid Position",
+                    f"P is not available for game type **{game_type}**.",
+                    discord.Color.orange()
+                ),
+                ephemeral=True
+            )
+            return
+        
         stats_to_add = {"innings": innings, "strikeouts": strikeouts, "walks": walks, "hits": hits, "runs": runs}
         await self._update_stats_command_handler(
             interaction, "P", player, stats_to_add, ["era", "whip"], "Pitcher Stats Updated"
@@ -1284,6 +1306,18 @@ class Stats(commands.Cog):
     )
     async def add_b_stats(self, interaction: discord.Interaction, player: str, at_bats: int = 0, hits: int = 0, home_runs: int = 0, rbis: int = 0, stolen_bases: int = 0):
         """Add Batter stats."""
+        game_type = get_guild_game_type(interaction.guild_id)
+        if "B" not in self.game_types.get(game_type, {}).get("categories", []):
+            await interaction.response.send_message(
+                embed=self.create_beautiful_embed(
+                    interaction, "⚠️ Invalid Position",
+                    f"B is not available for game type **{game_type}**.",
+                    discord.Color.orange()
+                ),
+                ephemeral=True
+            )
+            return
+        
         stats_to_add = {"at_bats": at_bats, "hits": hits, "home_runs": home_runs, "rbis": rbis, "stolen_bases": stolen_bases}
         await self._update_stats_command_handler(
             interaction, "B", player, stats_to_add, ["avg"], "Batter Stats Updated"
@@ -1299,6 +1333,18 @@ class Stats(commands.Cog):
     )
     async def add_st_stats(self, interaction: discord.Interaction, player: str, goals: int = 0, shots: int = 0, assists: int = 0, shots_on_target: int = 0):
         """Add Striker stats."""
+        game_type = get_guild_game_type(interaction.guild_id)
+        if "ST" not in self.game_types.get(game_type, {}).get("categories", []):
+            await interaction.response.send_message(
+                embed=self.create_beautiful_embed(
+                    interaction, "⚠️ Invalid Position",
+                    f"ST is not available for game type **{game_type}**.",
+                    discord.Color.orange()
+                ),
+                ephemeral=True
+            )
+            return
+        
         stats_to_add = {"goals": goals, "shots": shots, "assists": assists, "shots_on_target": shots_on_target}
         await self._update_stats_command_handler(
             interaction, "ST", player, stats_to_add, ["goal_pct"], "Striker Stats Updated"
@@ -1315,6 +1361,18 @@ class Stats(commands.Cog):
     )
     async def add_mf_stats(self, interaction: discord.Interaction, player: str, passes: int = 0, completions: int = 0, assists: int = 0, tackles: int = 0, goals: int = 0):
         """Add Midfielder stats."""
+        game_type = get_guild_game_type(interaction.guild_id)
+        if "MF" not in self.game_types.get(game_type, {}).get("categories", []):
+            await interaction.response.send_message(
+                embed=self.create_beautiful_embed(
+                    interaction, "⚠️ Invalid Position",
+                    f"MF is not available for game type **{game_type}**.",
+                    discord.Color.orange()
+                ),
+                ephemeral=True
+            )
+            return
+        
         stats_to_add = {"passes": passes, "completions": completions, "assists": assists, "tackles": tackles, "goals": goals}
         await self._update_stats_command_handler(
             interaction, "MF", player, stats_to_add, ["pass_pct"], "Midfielder Stats Updated"
@@ -1330,22 +1388,22 @@ class Stats(commands.Cog):
     )
     async def add_gk_stats(self, interaction: discord.Interaction, player: str, saves: int = 0, shots_faced: int = 0, goals_allowed: int = 0, clean_sheets: int = 0):
         """Add Goalkeeper stats."""
+        game_type = get_guild_game_type(interaction.guild_id)
+        if "GK" not in self.game_types.get(game_type, {}).get("categories", []):
+            await interaction.response.send_message(
+                embed=self.create_beautiful_embed(
+                    interaction, "⚠️ Invalid Position",
+                    f"GK is not available for game type **{game_type}**.",
+                    discord.Color.orange()
+                ),
+                ephemeral=True
+            )
+            return
+        
         stats_to_add = {"saves": saves, "shots_faced": shots_faced, "goals_allowed": goals_allowed, "clean_sheets": clean_sheets}
         await self._update_stats_command_handler(
             interaction, "GK", player, stats_to_add, ["save_pct"], "Goalkeeper Stats Updated"
         )
-
-    @commands.Cog.listener()
-    async def on_guild_join(self, guild):
-        """Register commands when joining a guild."""
-        await self.register_commands_for_guild(guild.id)
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        """Register commands for all guilds on startup."""
-        for guild in self.bot.guilds:
-            await self.register_commands_for_guild(guild.id)
-        logger.info("Stats Cog initialized and commands registered for all guilds.")
 
 async def setup(bot: commands.Bot):
     """Add Stats cog to bot."""

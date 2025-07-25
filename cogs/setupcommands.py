@@ -979,6 +979,7 @@ class OwnersUpdateView(discord.ui.View):
                 "announcements_channel": "announcements",
                 "free_agency_channel": "free_agency",
                 "reminders_channel": "reminders_channel_id", # Special case for notification_settings
+                "stats_channel": "stats",
             }
         }
 
@@ -1016,7 +1017,8 @@ class OwnersUpdateView(discord.ui.View):
                 {"name": "Results Log/Channel", "description": "Channel where game results are posted.", "type": "channel", "key": "results_channel"},
                 {"name": "Free Agency Announcements", "description": "Channel for free agency news.", "type": "channel", "key": "free_agency_channel"},
                 {"name": "Main Announcements Channel", "description": "Primary channel for bot-related announcements.", "type": "channel", "key": "announcements_channel"},
-                {"name": "Game Reminders Channel", "description": "Channel for automated game reminders.", "type": "channel", "key": "reminders_channel"},
+                {"name": "Game Reminders Channel", "description": "Channel for automated game time notifications and reminders.", "type": "channel", "key": "reminders_channel"},
+                {"name": "Statistics Channel", "description": "Channel for player statistics and leaderboards.", "type": "channel", "key": "stats_channel"},
             ]},
             {"title": "🔒 Specialized Channels","description": "Channel for a list of your team owners.","icon": "🔒","color": discord.Color.dark_grey().value,"fields": [ 
                 {"name": "Owners Channel", "description": "Private channel for team owners/GMs.", "type": "channel", "key": "owners_channel"},
