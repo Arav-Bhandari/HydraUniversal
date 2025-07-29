@@ -1,10 +1,11 @@
 import discord
-import asyncio
-import logging
-from discord import app_commands
 from discord.ext import commands
-from datetime import datetime
+from discord import app_commands
 import json
+import os
+import logging
+from datetime import datetime
+from typing import Optional
 import re # For parsing player lists
 
 # --- Utility Imports ---
@@ -112,11 +113,11 @@ class TradeCommands(commands.Cog):
                 if team_name_in_config.lower() == team.lower():
                     target_team_actual_name = team_name_in_config
                     break
-        
+
         if not target_team_actual_name:
             await interaction.response.send_message(embed=EmbedBuilder.error("Invalid Team", f"Team '{team}' does not exist in configuration."), ephemeral=True)
             return
-        
+
         team = target_team_actual_name # Use the correctly capitalized name
 
         # Parse player names
@@ -133,7 +134,7 @@ class TradeCommands(commands.Cog):
         # --- Player and Roster Cap Validation (Conceptual) ---
         # This section requires access to your player roster data.
         # You need to implement the placeholder functions (_find_player_record, _get_player_roster_cap, etc.)
-        
+
         # Check if offered players exist on the user's team and if swapping them keeps the team under cap
         # Check if wanted players exist on the target team and if swapping them keeps the target team under cap
         offered_player_records = []
@@ -157,17 +158,17 @@ class TradeCommands(commands.Cog):
                 await interaction.response.send_message(embed=EmbedBuilder.error("Invalid Player Assignment", f"'{player_name}' is not currently assigned to '{team}'."), ephemeral=True)
                 return
             wanted_player_records.append(player_record)
-            
+
         # Check roster caps BEFORE proposing
         user_team_cap = _get_player_roster_cap(user_team, interaction.guild.id)
         target_team_cap = _get_player_roster_cap(team, interaction.guild.id)
-        
+
         current_user_roster_size = _get_team_roster_count(user_team, interaction.guild.id)
         current_target_roster_size = _get_team_roster_count(team, interaction.guild.id)
 
         players_moving_out_of_user_team = len(offered_players)
         players_moving_into_user_team = len(wanted_players)
-        
+
         # Calculate hypothetical new roster sizes
         hypothetical_user_roster_size = current_user_roster_size - players_moving_out_of_user_team + players_moving_into_user_team
         hypothetical_target_roster_size = current_target_roster_size - players_moving_into_user_team + players_moving_out_of_user_team
@@ -250,15 +251,15 @@ class TradeCommands(commands.Cog):
 
             if guild_id in appointments and team in appointments[guild_id]:
                 team_appointments = appointments[guild_id][team]
-                
+
                 # Add GM
                 gm_discord_id = team_appointments.get("gm")
                 if gm_discord_id: team_fo_user_ids.add(int(gm_discord_id))
-                
+
                 # Add HC
                 hc_discord_id = team_appointments.get("hc")
                 if hc_discord_id: team_fo_user_ids.add(int(hc_discord_id))
-                
+
                 # Add all FO members
                 for fo_discord_id_str in team_appointments.get("fo", []):
                     try:
@@ -328,7 +329,7 @@ class TradeResponseView(discord.ui.View):
         # Verify the user interacting has the correct permissions (e.g., is FO/GM/HC for the target team)
         # This check should be more robust. For now, assuming if they got the DM, they have some right to respond.
         # A proper check would involve looking up team appointments or roles.
-        
+
         guild = self.bot.get_guild(int(self.guild_id))
         if not guild:
             await interaction.response.send_message(embed=EmbedBuilder.error("Error", "Could not find the server context for this trade."), ephemeral=True)
@@ -340,19 +341,19 @@ class TradeResponseView(discord.ui.View):
             return
 
         trade = trades[self.guild_id][self.trade_id]
-        
+
         # Check if the trade is still pending
         if trade["status"] != "pending":
             await interaction.response.send_message(embed=EmbedBuilder.error("Trade Already Processed", f"This trade has already been {trade['status']}."), ephemeral=True)
             return
-        
+
         # --- Authorization Check for Responder ---
         # The DM should only go to legitimate FO members. A stricter check here would be:
         # Find the team the user IS FOR via their roles/appointments, check if it matches trade["team2"]
         # This logic is already partially implemented in propose_trade's DM lookup,
         # and it should ideally be checked here too if multiple users could respond.
         # For simplicity now, we trust that DMs went to the correct people.
-        
+
         # --- Roster Cap & Player Validation for Acceptance ---
         trade_accepted_successfully = False
         if status == "accepted":
@@ -362,10 +363,10 @@ class TradeResponseView(discord.ui.View):
             offered_by_team2_names = trade.get("players_offered_by_team2", [])
             team1_name = trade["team1"]
             team2_name = trade["team2"]
-            
+
             valid_trade = True
             validation_messages = []
-            
+
             # 1. Validate existence of players and correct team assignments
             offered_by_team1_records = []
             for p_name in offered_by_team1_names:
@@ -377,7 +378,7 @@ class TradeResponseView(discord.ui.View):
                     valid_trade = False; validation_messages.append(f"'{p_name}' is not correctly assigned to {team1_name}.")
                     break
                 offered_by_team1_records.append(record)
-            
+
             if valid_trade:
                 offered_by_team2_records = []
                 for p_name in offered_by_team2_names:
@@ -397,29 +398,29 @@ class TradeResponseView(discord.ui.View):
                 current_team1_size = _get_team_roster_count(team1_name, self.guild_id)
                 players_leaving_team1 = len(offered_by_team1_records)
                 players_joining_team1 = len(offered_by_team2_records)
-                
+
                 hypothetical_team1_size = current_team1_size - players_leaving_team1 + players_joining_team1
                 if hypothetical_team1_size > team1_cap:
                     valid_trade = False
                     validation_messages.append(f"{team1_name}'s roster would exceed cap ({hypothetical_team1_size}/{team1_cap}).")
-                
+
                 # Check Team2's new roster size
                 team2_cap = _get_player_roster_cap(team2_name, self.guild_id)
                 current_team2_size = _get_team_roster_count(team2_name, self.guild_id)
                 players_leaving_team2 = len(offered_by_team2_records)
                 players_joining_team2 = len(offered_by_team1_records)
-                
+
                 hypothetical_team2_size = current_team2_size - players_leaving_team2 + players_joining_team2
                 if hypothetical_team2_size > team2_cap:
                     valid_trade = False
                     validation_messages.append(f"{team2_name}'s roster would exceed cap ({hypothetical_team2_size}/{team2_cap}).")
-            
+
             # If trade is not valid, respond with error and do NOT update statuses
             if not valid_trade:
                 logger.warning(f"Trade {self.trade_id} rejected due to validation failure: {', '.join(validation_messages)}")
                 # Notify user who responded
                 await interaction.response.send_message(embed=EmbedBuilder.error("Trade Rejected", "The trade could not be accepted due to the following issues:\n- " + "\n- ".join(validation_messages)), ephemeral=True)
-                
+
                 # Notify the original proposer about the rejection reason
                 proposer_user_id_str = trade.get("proposed_by")
                 proposer_user_id = int(proposer_user_id_str) if proposer_user_id_str and proposer_user_id_str.isdigit() else None
@@ -429,10 +430,10 @@ class TradeResponseView(discord.ui.View):
                         try:
                             await proposer_member.send(embed=EmbedBuilder.warning("Trade Rejected", f"Your trade proposal ({self.trade_id}) with {trade['team2']} was rejected because:\n- " + "\n- ".join(validation_messages)))
                         except Exception as e: logger.error(f"Failed to DM proposer ({proposer_member.id}) about rejected trade validation: {e}", exc_info=True)
-                
+
                 # Log the rejection reason
                 log_action(guild, "TRADE", interaction.user, f"Trade {self.trade_id} rejected due to validation: {', '.join(validation_messages)}", "trade_rejected_validation")
-                
+
                 # Optionally update original proposal message status? For now, just stop processing this response.
                 trade["status"] = "rejected_validation" # Mark as rejected with reason
                 trade["rejected_at"] = datetime.now().timestamp()
@@ -456,7 +457,7 @@ class TradeResponseView(discord.ui.View):
                     for player_record in offered_by_team1_records:
                         player_name_for_update = player_record["player_name"]
                         player_discord_id = player_record.get("discord_id")
-                        
+
                         if not player_name_for_update or not player_discord_id:
                              raise ValueError(f"Player record incomplete for '{player_name}' ({player_record}). Cannot process.")
 
@@ -481,7 +482,7 @@ class TradeResponseView(discord.ui.View):
                     trade_execution_success = False
                     status = "rejected_validation" # Set status to indicate failure
                     validation_messages.append(str(ve)) # Add error to messages
-                    
+
                     # Potentially revert any partial changes if something failed mid-way (complex)
                     # For simplicity, assuming atomic failure or that placeholders handle revert.
                 except Exception as e_exec:
@@ -489,7 +490,7 @@ class TradeResponseView(discord.ui.View):
                     trade_execution_success = False
                     status = "rejected_execution_error"
                     validation_messages.append("An unexpected server error occurred during execution.")
-                
+
                 # If execution was successful (no exceptions)
                 if trade_execution_success:
                     # --- DM Traded Players ---
@@ -522,14 +523,14 @@ class TradeResponseView(discord.ui.View):
                                 await tx_channel.send(embed=tx_embed)
                             else: logger.warning(f"Transactions channel {tx_channel_id} not found for trade completion log.")
                         else: logger.warning("Transactions channel ID not configured.")
-                    
+
                 # Update trade status in JSON regardless of success to prevent reprocessing
                 trade["status"] = status
                 trade[f"{status}_at"] = datetime.now().timestamp()
                 trade[f"{status}_by"] = str(interaction.user.id)
                 if validation_messages: # Add rejection messages if applicable
                     trade["rejection_reason"] = ", ".join(validation_messages)
-                
+
                 trades[self.guild_id][self.trade_id] = trade
                 save_json("trades.json", trades) # Save updated trade status
 
@@ -544,7 +545,7 @@ class TradeResponseView(discord.ui.View):
 
             trades[self.guild_id][self.trade_id] = trade # Save updated status
             save_json("trades.json", trades) # Save updated trade status
-            
+
             # Notify the original proposer about the denial and reason
             proposer_user_id_str = trade.get("proposed_by")
             proposer_user_id = int(proposer_user_id_str) if proposer_user_id_str and proposer_user_id_str.isdigit() else None
@@ -553,6 +554,7 @@ class TradeResponseView(discord.ui.View):
                 if proposer_member:
                     try:
                         await proposer_member.send(embed=EmbedBuilder.warning(f"Trade {status.capitalize()}", f"Your proposed trade ({self.trade_id}) with {trade['team2']} was rejected because:\n- " + "\n- ".join(validation_messages)))
+```python
                     except Exception as e: logger.error(f"Failed to DM proposer ({proposer_member.id}) about trade {self.trade_id} rejection: {e}", exc_info=True)
 
         # --- Common steps for accept/deny/reject ---
@@ -588,14 +590,14 @@ class TradeResponseView(discord.ui.View):
         if not member:
             logger.warning(f"Could not find member {discord_user_id} to DM trade outcome for trade {trade['trade_id']}.")
             return
-        
+
         outcome = trade.get("status")
         if outcome not in ["accepted", "rejected_validation", "rejected_execution_error"]: return # Only DM for final outcomes
 
         dm_embed_title = ""
         dm_embed_color = discord.Color.default()
         dm_description_lines = []
-        
+
         offering_team = trade["team1"] if player_team == trade["team1"] else trade["team2"]
         receiving_team = trade["team2"] if player_team == trade["team1"] else trade["team1"]
 
@@ -630,7 +632,7 @@ class TradeResponseView(discord.ui.View):
             timestamp=datetime.now()
         )
         dm_embed.set_footer(text=f"Trade ID: {trade.get('trade_id')}")
-        
+
         try:
             await member.send(embed=dm_embed)
         except Exception as e:

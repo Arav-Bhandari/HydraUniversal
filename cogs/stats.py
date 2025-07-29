@@ -558,15 +558,15 @@ class Stats(commands.Cog):
 
         return fields
 
-@app_commands.command(name="stat_config", description="Configure the game type for this server (Admin only).")
-@app_commands.describe(game_type="The type of game for this server.")
-@app_commands.choices(game_type=[
-    app_commands.Choice(name="7v7 Football", value="7v7"),
-    app_commands.Choice(name="11v11 Football", value="11v11"),
-    app_commands.Choice(name="Baseball", value="baseball"),
-    app_commands.Choice(name="Soccer", value="soccer")
-])
-async def stat_config(self, interaction: discord.Interaction, game_type: str):
+    @app_commands.command(name="stat_config", description="Configure the game type for this server (Admin only).")
+    @app_commands.describe(game_type="The type of game for this server.")
+    @app_commands.choices(game_type=[
+        app_commands.Choice(name="7v7 Football", value="7v7"),
+        app_commands.Choice(name="11v11 Football", value="11v11"),
+        app_commands.Choice(name="Baseball", value="baseball"),
+        app_commands.Choice(name="Soccer", value="soccer")
+    ])
+    async def stat_config(self, interaction: discord.Interaction, game_type: str):
     """Configure game type for the guild and sync commands."""
     try:
         # Check admin permissions
