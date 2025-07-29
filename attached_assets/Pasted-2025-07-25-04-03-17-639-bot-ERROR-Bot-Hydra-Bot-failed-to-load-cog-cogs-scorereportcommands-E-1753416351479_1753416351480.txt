@@ -1,0 +1,34 @@
+2025-07-25 04:03:17,639 - bot - ERROR - Bot Hydra Bot failed to load cog cogs.scorereportcommands: Extension 'cogs.scorereportcommands' raised an error: TypeError: autocomplete callback must be a coroutine function
+Traceback (most recent call last):
+  File "/home/container/.local/lib/python3.12/site-packages/discord/ext/commands/bot.py", line 951, in _load_from_module_spec
+    spec.loader.exec_module(lib)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/home/container/cogs/scorereportcommands.py", line 12, in <module>
+    class ScoreReportCommands(commands.Cog):
+  File "/home/container/cogs/scorereportcommands.py", line 46, in ScoreReportCommands
+    @app_commands.command(name="score_report", description="Report the score of a game with stat images")
+     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/container/.local/lib/python3.12/site-packages/discord/app_commands/commands.py", line 2060, in decorator
+    return Command(
+           ^^^^^^^^
+  File "/home/container/.local/lib/python3.12/site-packages/discord/app_commands/commands.py", line 687, in __init__
+    self._params: Dict[str, CommandParameter] = _extract_parameters_from_callback(callback, callback.__globals__)
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/container/.local/lib/python3.12/site-packages/discord/app_commands/commands.py", line 419, in _extract_parameters_from_callback
+    _populate_autocomplete(result, autocomplete.copy())
+  File "/home/container/.local/lib/python3.12/site-packages/discord/app_commands/commands.py", line 349, in _populate_autocomplete
+    raise TypeError('autocomplete callback must be a coroutine function')
+TypeError: autocomplete callback must be a coroutine function
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/container/main.py", line 241, in on_ready
+    await bot.load_extension(cog_name)
+  File "/home/container/.local/lib/python3.12/site-packages/discord/ext/commands/bot.py", line 1029, in load_extension
+    await self._load_from_module_spec(spec, name)
+  File "/home/container/.local/lib/python3.12/site-packages/discord/ext/commands/bot.py", line 954, in _load_from_module_spec
+    raise errors.ExtensionFailed(key, e) from e
+discord.ext.commands.errors.ExtensionFailed: Extension 'cogs.scorereportcommands' raised an error: TypeError: autocomplete callback must be a coroutine function

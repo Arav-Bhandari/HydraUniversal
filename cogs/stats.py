@@ -408,7 +408,7 @@ class Stats(commands.Cog):
         """Sync stats commands only to configured guilds."""
         # Load guild game types
         guild_game_types = load_guild_game_types()
-        
+
         # Sync commands only to guilds with configured game types
         for guild_id_str in guild_game_types.keys():
             try:
@@ -431,7 +431,7 @@ class Stats(commands.Cog):
             member = ctx.author if hasattr(ctx.author, 'roles') else ctx.guild.get_member(ctx.author.id)
         else:
             return False
-            
+
         if not member or not await has_statistician_role(member):
             embed = self.create_enhanced_embed(
                 "🚫 Access Denied",
@@ -483,26 +483,26 @@ class Stats(commands.Cog):
         # Add decorative elements to description
         if description and not description.startswith("━"):
             description = f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n{description}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        
+
         embed = discord.Embed(
             title=f"{self.get_title_emoji(title)} {title}",
             description=description,
             color=color,
             timestamp=datetime.now(timezone.utc)
         )
-        
+
         # Set thumbnail based on guild icon
         if interaction.guild and interaction.guild.icon:
             embed.set_thumbnail(url=interaction.guild.icon.url)
-        
+
         # Enhanced footer with better formatting
         guild_name = interaction.guild.name if interaction.guild else "Unknown Server"
         requestor_name = interaction.user.display_name if interaction.user else "Unknown User"
         requestor_avatar = interaction.user.avatar.url if interaction.user and interaction.user.avatar else None
-        
+
         footer_text = f"🏟️ {guild_name} • 👤 Requested by {requestor_name}"
         embed.set_footer(text=footer_text, icon_url=requestor_avatar)
-        
+
         return embed
 
     def get_title_emoji(self, title):
@@ -558,85 +558,106 @@ class Stats(commands.Cog):
 
         return fields
 
-    @app_commands.command(name="stat_config", description="Configure the game type for this server (Admin only).")
-    @app_commands.describe(game_type="The type of game for this server.")
-    @app_commands.choices(game_type=[
-        app_commands.Choice(name="7v7 Football", value="7v7"),
-        app_commands.Choice(name="11v11 Football", value="11v11"),
-        app_commands.Choice(name="Baseball", value="baseball"),
-        app_commands.Choice(name="Soccer", value="soccer")
-    ])
-    async def stat_config(self, interaction: discord.Interaction, game_type: str):
-        """Configure game type for the guild."""
-        try:
-            # Check admin permissions
-            if not interaction.user.guild_permissions.administrator:
-                embed = self.create_enhanced_embed(
-                    "🚫 Access Denied",
-                    "Only server **Administrators** can configure game types.",
-                    discord.Color.red(),
-                    interaction
-                )
-                await interaction.response.send_message(embed=embed, ephemeral=True)
-                return
-
-            if game_type not in self.game_types:
-                embed = self.create_enhanced_embed(
-                    "⚠️ Invalid Game Type",
-                    f"Game type **{game_type}** is not supported.\n\nSupported types: {', '.join(self.game_types.keys())}",
-                    discord.Color.orange(),
-                    interaction
-                )
-                await interaction.response.send_message(embed=embed, ephemeral=True)
-                return
-
-            # Update guild game type configuration
-            guild_game_types = load_guild_game_types()
-            guild_game_types[str(interaction.guild_id)] = game_type
-            
-            with open("data/guild_game_types.json", "w") as f:
-                json.dump(guild_game_types, f, indent=4)
-
-            # Create success embed with enhanced styling
+@app_commands.command(name="stat_config", description="Configure the game type for this server (Admin only).")
+@app_commands.describe(game_type="The type of game for this server.")
+@app_commands.choices(game_type=[
+    app_commands.Choice(name="7v7 Football", value="7v7"),
+    app_commands.Choice(name="11v11 Football", value="11v11"),
+    app_commands.Choice(name="Baseball", value="baseball"),
+    app_commands.Choice(name="Soccer", value="soccer")
+])
+async def stat_config(self, interaction: discord.Interaction, game_type: str):
+    """Configure game type for the guild and sync commands."""
+    try:
+        # Check admin permissions
+        if not interaction.user.guild_permissions.administrator:
             embed = self.create_enhanced_embed(
-                "⚙️ Game Type Configured Successfully",
-                f"✅ Game type set to **{game_type}** for **{interaction.guild.name}**\n\n🔄 Commands will now use this game type automatically.",
-                discord.Color.green(),
-                interaction
-            )
-            
-            # Add configuration details
-            game_config = self.game_types[game_type]
-            categories_text = ", ".join([f"**{cat}**" for cat in game_config["categories"]])
-            embed.add_field(
-                name="📊 Available Categories",
-                value=categories_text,
-                inline=False
-            )
-            
-            embed.add_field(
-                name="🎯 Next Steps",
-                value="• Use `/statview` to view player statistics\n• Use `/statleaderboard` to see top performers\n• Use position-specific commands to add stats",
-                inline=False
-            )
-
-            await interaction.response.send_message(embed=embed)
-            
-            # Log the action
-            await log_action(
-                interaction.guild, "CONFIG", interaction.user,
-                f"Set game type to {game_type}", "stat_config"
-            )
-            
-        except Exception as e:
-            logger.error(f"Error configuring game type for guild {interaction.guild_id}: {e}")
-            embed = self.create_enhanced_embed(
-                "🚫 Configuration Error",
-                f"Failed to configure game type. Please try again.\n\n**Error:** {str(e)}",
+                "🚫 Access Denied",
+                "Only server **Administrators** can configure game types.",
                 discord.Color.red(),
                 interaction
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
+            return
+
+        if game_type not in self.game_types:
+            embed = self.create_enhanced_embed(
+                "⚠️ Invalid Game Type",
+                f"Game type **{game_type}** is not supported.\n\nSupported types: {', '.join(self.game_types.keys())}",
+                discord.Color.orange(),
+                interaction
+            )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+            return
+
+        # Update guild game type configuration
+        guild_game_types = load_guild_game_types()
+        guild_id_str = str(interaction.guild_id)
+        guild_game_types[guild_id_str] = game_type
+
+        async with json_lock:
+            os.makedirs("data", exist_ok=True)
+            with open("data/guild_game_types.json", "w") as f:
+                json.dump(guild_game_types, f, indent=4)
+            logger.info(f"Saved game type {game_type} for guild {interaction.guild_id}")
+
+        # Sync commands for this guild
+        try:
+            self.bot.tree.clear_commands(guild=interaction.guild)
+            self.bot.tree.copy_global_to(guild=interaction.guild)
+            await self.bot.tree.sync(guild=interaction.guild)
+            logger.info(f"Synced commands for guild {interaction.guild.name} ({interaction.guild_id}) with game type {game_type}")
+        except Exception as e:
+            logger.error(f"Failed to sync commands for guild {interaction.guild_id}: {e}")
+            embed = self.create_enhanced_embed(
+                "⚠️ Command Sync Failed",
+                f"Game type set to **{game_type}**, but command syncing failed.\n\n**Error:** {str(e)}\n\nPlease try again or contact support.",
+                discord.Color.orange(),
+                interaction
+            )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+            return
+
+        # Create success embed with enhanced styling
+        embed = self.create_enhanced_embed(
+            "⚙️ Game Type Configured Successfully",
+            f"✅ Game type set to **{game_type}** for **{interaction.guild.name}**\n\n🔄 Commands have been synced for this server.",
+            discord.Color.green(),
+            interaction
+        )
+
+        # Add configuration details
+        game_config = self.game_types[game_type]
+        categories_text = ", ".join([f"**{cat}**" for cat in game_config["categories"]])
+        embed.add_field(
+            name="📊 Available Categories",
+            value=categories_text,
+            inline=False
+        )
+
+        embed.add_field(
+            name="🎯 Next Steps",
+            value="• Use `/statview` to view player statistics\n• Use `/statleaderboard` to see top performers\n• Use position-specific commands to add stats",
+            inline=False
+        )
+
+        await interaction.response.send_message(embed=embed)
+
+        # Log the action
+        await log_action(
+            interaction.guild, "CONFIG", interaction.user,
+            f"Set game type to {game_type} and synced commands", "stat_config"
+        )
+
+    except Exception as e:
+        logger.error(f"Error configuring game type for guild {interaction.guild_id}: {e}")
+        embed = self.create_enhanced_embed(
+            "🚫 Configuration Error",
+            f"Failed to configure game type. Please try again.\n\n**Error:** {str(e)}",
+            discord.Color.red(),
+            interaction
+        )
+        await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @app_commands.command(name="statview", description="View a player's statistics.")
     @app_commands.describe(category="The position category.", player="The name of the player.")
@@ -755,7 +776,7 @@ class Stats(commands.Cog):
             discord.Color.gold(),
             interaction
         )
-        
+
         # Split leaderboard into multiple fields for better readability
         if len(leaderboard_lines) > 5:
             mid_point = len(leaderboard_lines) // 2
@@ -775,7 +796,7 @@ class Stats(commands.Cog):
                 value="\n".join(leaderboard_lines), 
                 inline=False
             )
-        
+
         # Add summary field
         embed.add_field(
             name="📊 Summary",
@@ -1139,7 +1160,7 @@ class Stats(commands.Cog):
                 ephemeral=True
             )
             return
-        
+
         stats_to_add = {"comp": comp, "att": att, "yards": yards, "tds": tds, "ints": ints, "sacks": sacks}
         await self._update_stats_command_handler(
             interaction, "QB", player, stats_to_add,
@@ -1168,7 +1189,7 @@ class Stats(commands.Cog):
                 ephemeral=True
             )
             return
-        
+
         stats_to_add = {"catches": catches, "targets": targets, "tds": tds, "yac": yac, "yards": yards}
         await self._update_stats_command_handler(
             interaction, "WR", player, stats_to_add,
@@ -1197,7 +1218,7 @@ class Stats(commands.Cog):
                 ephemeral=True
             )
             return
-        
+
         stats_to_add = {"ints": ints, "targets": targets, "swats": swats, "tds": tds, "comp_allowed": comp_allowed}
         await self._update_stats_command_handler(
             interaction, "CB", player, stats_to_add,
@@ -1225,7 +1246,7 @@ class Stats(commands.Cog):
                 ephemeral=True
             )
             return
-        
+
         stats_to_add = {"tackles": tackles, "misses": misses, "sacks": sacks, "safeties": safeties}
         await self._update_stats_command_handler(
             interaction, "DE", player, stats_to_add, [], "DE Stats Updated"
@@ -1252,7 +1273,7 @@ class Stats(commands.Cog):
                 ephemeral=True
             )
             return
-        
+
         stats_to_add = {"rushes": rushes, "yards": yards, "tds": tds, "fumbles": fumbles}
         await self._update_stats_command_handler(
             interaction, "RB", player, stats_to_add, ["ypr"], "RB Stats Updated"
@@ -1279,7 +1300,7 @@ class Stats(commands.Cog):
                 ephemeral=True
             )
             return
-        
+
         stats_to_add = {"tackles": tackles, "misses": misses, "sacks": sacks, "ints": ints}
         await self._update_stats_command_handler(
             interaction, "LB", player, stats_to_add, [], "LB Stats Updated"
@@ -1307,7 +1328,7 @@ class Stats(commands.Cog):
                 ephemeral=True
             )
             return
-        
+
         stats_to_add = {"innings": innings, "strikeouts": strikeouts, "walks": walks, "hits": hits, "runs": runs}
         await self._update_stats_command_handler(
             interaction, "P", player, stats_to_add, ["era", "whip"], "Pitcher Stats Updated"
@@ -1335,7 +1356,7 @@ class Stats(commands.Cog):
                 ephemeral=True
             )
             return
-        
+
         stats_to_add = {"at_bats": at_bats, "hits": hits, "home_runs": home_runs, "rbis": rbis, "stolen_bases": stolen_bases}
         await self._update_stats_command_handler(
             interaction, "B", player, stats_to_add, ["avg"], "Batter Stats Updated"
@@ -1362,7 +1383,7 @@ class Stats(commands.Cog):
                 ephemeral=True
             )
             return
-        
+
         stats_to_add = {"goals": goals, "shots": shots, "assists": assists, "shots_on_target": shots_on_target}
         await self._update_stats_command_handler(
             interaction, "ST", player, stats_to_add, ["goal_pct"], "Striker Stats Updated"
@@ -1390,7 +1411,7 @@ class Stats(commands.Cog):
                 ephemeral=True
             )
             return
-        
+
         stats_to_add = {"passes": passes, "completions": completions, "assists": assists, "tackles": tackles, "goals": goals}
         await self._update_stats_command_handler(
             interaction, "MF", player, stats_to_add, ["pass_pct"], "Midfielder Stats Updated"
@@ -1417,7 +1438,7 @@ class Stats(commands.Cog):
                 ephemeral=True
             )
             return
-        
+
         stats_to_add = {"saves": saves, "shots_faced": shots_faced, "goals_allowed": goals_allowed, "clean_sheets": clean_sheets}
         await self._update_stats_command_handler(
             interaction, "GK", player, stats_to_add, ["save_pct"], "Goalkeeper Stats Updated"

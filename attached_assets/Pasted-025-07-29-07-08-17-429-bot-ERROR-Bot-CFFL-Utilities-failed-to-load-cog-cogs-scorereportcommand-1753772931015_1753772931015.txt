@@ -1,0 +1,130 @@
+025-07-29 07:08:17,429 - bot - ERROR - Bot CFFL Utilities failed to load cog cogs.scorereportcommands: Extension 'cogs.scorereportcommands' raised an error: TypeError: autocomplete callback must be a coroutine function
+Traceback (most recent call last):
+  File "/home/container/.local/lib/python3.12/site-packages/discord/ext/commands/bot.py", line 951, in _load_from_module_spec
+    spec.loader.exec_module(lib)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/home/container/cogs/scorereportcommands.py", line 12, in <module>
+    class ScoreReportCommands(commands.Cog):
+  File "/home/container/cogs/scorereportcommands.py", line 46, in ScoreReportCommands
+    @app_commands.command(name="score_report", description="Report the score of a game with stat images")
+     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/container/.local/lib/python3.12/site-packages/discord/app_commands/commands.py", line 2060, in decorator
+    return Command(
+           ^^^^^^^^
+  File "/home/container/.local/lib/python3.12/site-packages/discord/app_commands/commands.py", line 687, in __init__
+    self._params: Dict[str, CommandParameter] = _extract_parameters_from_callback(callback, callback.__globals__)
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/container/.local/lib/python3.12/site-packages/discord/app_commands/commands.py", line 419, in _extract_parameters_from_callback
+    _populate_autocomplete(result, autocomplete.copy())
+  File "/home/container/.local/lib/python3.12/site-packages/discord/app_commands/commands.py", line 349, in _populate_autocomplete
+    raise TypeError('autocomplete callback must be a coroutine function')
+TypeError: autocomplete callback must be a coroutine function
+The above exception was the direct cause of the following exception:
+Traceback (most recent call last):
+  File "/home/container/main.py", line 241, in on_ready
+    await bot.load_extension(cog_name)
+  File "/home/container/.local/lib/python3.12/site-packages/discord/ext/commands/bot.py", line 1029, in load_extension
+    await self._load_from_module_spec(spec, name)
+  File "/home/container/.local/lib/python3.12/site-packages/discord/ext/commands/bot.py", line 954, in _load_from_module_spec
+    raise errors.ExtensionFailed(key, e) from e
+discord.ext.commands.errors.ExtensionFailed: Extension 'cogs.scorereportcommands' raised an error: TypeError: autocomplete callback must be a coroutine function
+2025-07-29 07:08:17,431 - bot - INFO - Bot CFFL Utilities loaded cog: cogs.awardcommands
+2025-07-29 07:08:17,433 - bot.user_blacklist_manager - ERROR - Error decoding JSON from 'data/user_blacklists.json'. Returning empty dict.
+2025-07-29 07:08:17,433 - bot.applications - INFO - Applications cog loading...
+2025-07-29 07:08:17,433 - bot.applications - INFO - Persistent views setup complete for Applications cog.
+2025-07-29 07:08:17,433 - bot - INFO - Bot CFFL Utilities loaded cog: cogs.applications
+2025-07-29 07:08:17,435 - bot.tickets - INFO - Persistent Ticket Views added.
+2025-07-29 07:08:17,436 - bot.tickets - INFO - Tickets cog loaded and inactivity check started.
+2025-07-29 07:08:17,436 - bot - INFO - Bot CFFL Utilities loaded cog: cogs.tickets
+2025-07-29 07:08:17,437 - bot - INFO - Bot CFFL Utilities loaded cog: cogs.folist
+2025-07-29 07:08:17,437 - bot.self_edit - INFO - SelfEdit Cog loaded.
+2025-07-29 07:08:17,437 - bot - INFO - Bot CFFL Utilities loaded cog: cogs.self_edit
+2025-07-29 07:08:17,501 - bot - INFO - Bot CFFL Utilities loaded cog: cogs.goldsecuritycog
+2025-07-29 07:08:17,502 - bot - INFO - Bot CFFL Utilities loaded cog: cogs.giveaways
+2025-07-29 07:08:17,503 - bot - INFO - Bot CFFL Utilities loaded cog: cogs.verification
+2025-07-29 07:08:17,504 - bot - ERROR - Bot CFFL Utilities failed to load cog cogs.stats: Extension 'cogs.stats' raised an error: TypeError: unsupported type annotation <class 'discord.interactions.Interaction'>
+Traceback (most recent call last):
+  File "/home/container/.local/lib/python3.12/site-packages/discord/ext/commands/bot.py", line 951, in _load_from_module_spec
+    spec.loader.exec_module(lib)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/home/container/cogs/stats.py", line 561, in <module>
+    @app_commands.command(name="stat_config", description="Configure the game type for this server (Admin only).")
+     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/container/.local/lib/python3.12/site-packages/discord/app_commands/commands.py", line 2060, in decorator
+    return Command(
+           ^^^^^^^^
+  File "/home/container/.local/lib/python3.12/site-packages/discord/app_commands/commands.py", line 687, in __init__
+    self._params: Dict[str, CommandParameter] = _extract_parameters_from_callback(callback, callback.__globals__)
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/container/.local/lib/python3.12/site-packages/discord/app_commands/commands.py", line 383, in _extract_parameters_from_callback
+    param = annotation_to_parameter(resolved, parameter)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/container/.local/lib/python3.12/site-packages/discord/app_commands/transformers.py", line 835, in annotation_to_parameter
+    (inner, default, validate_default) = get_supported_annotation(annotation)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/container/.local/lib/python3.12/site-packages/discord/app_commands/transformers.py", line 794, in get_supported_annotation
+    raise TypeError(f'unsupported type annotation {annotation!r}')
+TypeError: unsupported type annotation <class 'discord.interactions.Interaction'>
+The above exception was the direct cause of the following exception:
+Traceback (most recent call last):
+  File "/home/container/main.py", line 241, in on_ready
+    await bot.load_extension(cog_name)
+  File "/home/container/.local/lib/python3.12/site-packages/discord/ext/commands/bot.py", line 1029, in load_extension
+    await self._load_from_module_spec(spec, name)
+  File "/home/container/.local/lib/python3.12/site-packages/discord/ext/commands/bot.py", line 954, in _load_from_module_spec
+    raise errors.ExtensionFailed(key, e) from e
+discord.ext.commands.errors.ExtensionFailed: Extension 'cogs.stats' raised an error: TypeError: unsupported type annotation <class 'discord.interactions.Interaction'>
+2025-07-29 07:08:17,506 - bot - INFO - Bot CFFL Utilities loaded cog: cogs.promotioncommands
+2025-07-29 07:08:17,507 - bot.freeagency - INFO - EnhancedSigningCommands cog found. Proceeding to load FreeAgencyManagerCog.
+2025-07-29 07:08:17,507 - bot.freeagency - INFO - FreeAgencyManagerCog loaded successfully.
+2025-07-29 07:08:17,507 - bot - INFO - Bot CFFL Utilities loaded cog: cogs.freeagency
+2025-07-29 07:08:17,508 - bot - INFO - Bot AFD Utilities (1380373925997051965) logged in with token ending in gbQ7WA (Category: Gold)
+2025-07-29 07:08:17,511 - bot - ERROR - Bot AFD Utilities failed to load cog cogs.setupcommands: Extension 'cogs.setupcommands' raised an error: IndentationError: unexpected indent (setupcommands.py, line 318)
+Traceback (most recent call last):
+  File "/home/container/.local/lib/python3.12/site-packages/discord/ext/commands/bot.py", line 951, in _load_from_module_spec
+    spec.loader.exec_module(lib)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1133, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1063, in source_to_code
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/home/container/cogs/setupcommands.py", line 318
+    elif field_key_page in ["announcements_channel", "free_agency_channel"]: # Announcement channels
+IndentationError: unexpected indent
+The above exception was the direct cause of the following exception:
+Traceback (most recent call last):
+  File "/home/container/main.py", line 241, in on_ready
+    await bot.load_extension(cog_name)
+  File "/home/container/.local/lib/python3.12/site-packages/discord/ext/commands/bot.py", line 1029, in load_extension
+    await self._load_from_module_spec(spec, name)
+  File "/home/container/.local/lib/python3.12/site-packages/discord/ext/commands/bot.py", line 954, in _load_from_module_spec
+    raise errors.ExtensionFailed(key, e) from e
+discord.ext.commands.errors.ExtensionFailed: Extension 'cogs.setupcommands' raised an error: IndentationError: unexpected indent (setupcommands.py, line 318)
+2025-07-29 07:08:17,513 - bot - INFO - Bot AFD Utilities loaded cog: cogs.signing_commands
+2025-07-29 07:08:17,514 - bot - INFO - Bot AFD Utilities loaded cog: cogs.appointment_commands
+2025-07-29 07:08:17,514 - bot - ERROR - Bot AFD Utilities failed to load cog cogs.trade_commands: Extension 'cogs.trade_commands' raised an error: NameError: name 'Optional' is not defined
+Traceback (most recent call last):
+  File "/home/container/.local/lib/python3.12/site-packages/discord/ext/commands/bot.py", line 951, in _load_from_module_spec
+    spec.loader.exec_module(lib)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/home/container/cogs/trade_commands.py", line 26, in <module>
+    def _find_player_record(player_name: str, team_name: str, guild_id: int) -> Optional[dict]:
+                                                                                ^^^^^^^^
+NameError: name 'Optional' is not defined
+The above exception was the direct cause of the following exception:
+Traceback (most recent call last):
+  File "/home/container/main.py", line 241, in on_ready
+    await bot.load_extension(cog_name)
+  File "/home/container/.local/lib/python3.12/site-packages/discord/ext/commands/bot.py", line 1029, in load_extension
+    await self._load_from_module_spec(spec, name)
+  File "/home/container/.local/lib/python3.12/site-packages/discord/ext/commands/bot.py", line 954, in _load_from_module_spec
+    raise errors.ExtensionFailed(key, e) from e
+discord.ext.commands.errors.ExtensionFailed: Extension 'cogs.trade_commands' raised an error: NameError: name 'Optional' is not defined
+2025-07-29 07:08:17,517 - bot.roster - INFO - RosterCommands Cog loaded.
+2025-07-29 07:08:17,517 - bot - INFO - Bot AFD Utilities loaded cog: cogs.roster_commands
