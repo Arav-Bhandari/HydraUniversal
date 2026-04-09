@@ -59,22 +59,7 @@ def save_server_config(config):
 
 def load_tokens():
     """Return hardcoded bot tokens with their categories"""
-    tokens = [
-        {"token": "MTM3MDE0NjY3NjYzMDg4MDI1Ng.GqxSA9.rMezfeiffqODskgi1wwwHQ6-Ey25R8Tn_sJi5c", "category": "Universal"},  # Universal
-        {"token": "MTM4MjA5ODU5NTIwOTAxOTQ5Mw.GHKYfn.3N3PZSmBe6Xu6i1JMEqAHueZAGvpW4Vcv_P2OU", "category": "Gold"},  # HVFL-FF (Paid)
-        {"token": "MTM4NTc5NDQ4MzYzOTAyOTg1MQ.GZ18Md.HasBT7Qxbn4a9HZO6tSc0_mjsmQNQJZD_twWwc", "category": "Gold"},  # NGBA Bot (Partnership)
-        {"token": "MTM3MTUzODc0MTA5Njc0NzA4MA.G5irSg.wWQgrmaFFyW3k4JNxh8cLC45ZYgt2p_CjfbZds", "category": "Gold"},  # NFA Utilities (partner)
-        {"token": "MTM3ODE1OTEwMjk3ODU1NTk3NQ.GuksTJ.NoaVH7zGVOzHrzBXTOXcb-g62ztCtFvrPF_WeA", "category": "Gold"},	# CFFL Bot, Lifetime
-        {"token": "MTM4MDM3MzkyNTk5NzA1MTk2NQ.G5SWgM.aYWs1Oh-yvRKB6D-XrvlMQBEtgxgBQp9gbQ7WA", "category": "Gold"},	# AFD Utilties, (paid)
-        {"token": "MTM4OTc4ODA3MDkwNzIxOTk3OQ.GlP8Mw.5p1obH6_YaeIAUSSFVBlc0lR2WIqFRRUoQIruo", "category": "Gold"},  # EFL Bot (Paid)
-        {"token": "MTM5NTQ1NjIyNjA5MDk0NjU5MA.G5NgaN.gUzZ4ciMV3_qEvHyNdh5YwaRfGa0EtWWIXKcvU", "category": "Gold"},   # DBA league bot
-        {"token": "MTM4NTI4MzQxMDQxODk5MTE5NA.GDeXor.GudjgOgLOD6rwf6Vdad5CK-cKVneHCM6ZsmX5Q", "category": "Gold"},   # FGA/Genus Bot
-        {"token": "MTM5NzAxOTU0MTg1NDQ4NjU4OA.GyCQ2x.boDDOnZy0JyFU7AY8cAqefLcbsTNn4tcw1j734", "category": "Gold"},   # UBL Bot
-        {"token": "MTM5NzAyMDE4OTg0NTA5NDQyMA.Ghs0o7.ba5yKF2o2_AHQHqEc04GC-FPAlk1riQeGY4EgQ", "category": "Gold"},   # MBL Bot
-        {"token": "MTM5Nzc5ODUxNzU3Mjg5NDczMA.GywtZZ.Iw605x6PoNOvUMEaYurIrnV1OFcgNDORRxqj90", "category": "Gold"},   # SFA Utilities
-        {"token": "MTM5Nzc5OTY4NTY2NTU5MTMzNg.GTLYIu.RcFQMiQ_cWLpUCaN-NFGtVEZilY_tTeAP3w-zo", "category": "Gold"}    # TFA Utilities
-        
-    ]
+# Accidentally posted once, have been rotated and are useless now. 
     if not tokens:
         logger.error("No tokens provided in hardcoded list")
         raise Exception("No tokens provided")
